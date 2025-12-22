@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from "react"
 export default function SandraProfilePage() {
   const [showReviews, setShowReviews] = useState(false)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [showDescription, setShowDescription] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const photos = [
@@ -122,7 +123,9 @@ export default function SandraProfilePage() {
           Hi ich heisse Sandra, wohne in Zürich mit meinen zwei Katzen Bionda und Blanca. Dank der Katzentür habe sie
           Zugang zur Aussenwelt. Gerne verreise ich für ein paar Tage auf Städtetrips.
         </p>
-        <button className="text-primary font-medium mb-6">mehr</button>
+        <button className="text-primary font-medium mb-6" onClick={() => setShowDescription(true)}>
+          mehr
+        </button>
 
         <div className="flex items-start gap-3 mb-8 text-muted-foreground">
           <svg className="w-6 h-6 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,6 +221,37 @@ export default function SandraProfilePage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {showDescription && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 animate-in fade-in"
+            onClick={() => setShowDescription(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[85vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="sticky top-0 bg-background border-b px-4 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Über Sandra</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowDescription(false)}>
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(85vh-64px)] px-4 py-6">
+              <p className="text-base leading-relaxed">
+                Hi ich heisse Sandra, wohne in Zürich mit meinen zwei Katzen Bionda und Blanca. Dank der Katzentür haben
+                sie Zugang zur Aussenwelt und können selbstständig rein und raus. Gerne verreise ich für ein paar Tage
+                auf Städtetrips und würde mich freuen, wenn sich in der Zeit jemand um meine beiden Katzen kümmern
+                könnte.
+                <br />
+                <br />
+                Bionda ist eine verspielte junge Katze, die gerne mit Federspielzeug spielt. Blanca ist etwas ruhiger
+                und liebt es, auf der Fensterbank zu liegen und die Vögel zu beobachten. Beide sind sehr sozial und
+                mögen es, wenn man mit ihnen spielt und kuschelt. Sie sind an andere Menschen gewöhnt und zeigen sich
+                meist schnell zutraulich.
+              </p>
             </div>
           </div>
         </>

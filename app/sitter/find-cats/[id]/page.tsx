@@ -22,6 +22,8 @@ const sitterRequestsData: Record<
     price?: number
     notes: string
     description: string
+    fullDescription: string
+    fullNotes: string
     rating: number
     reviewCount: number
   }
@@ -46,8 +48,12 @@ const sitterRequestsData: Record<
     dates: "2.-3. November 2025",
     status: "Tausch",
     notes: "Meine Katzen sind sehr verspielt und brauchen 2x täglich Nassfutter. Sie lieben es, draußen zu sein.",
+    fullNotes:
+      "Meine Katzen sind sehr verspielt und brauchen 2x täglich Nassfutter. Sie lieben es, draußen zu sein. Joe bevorzugt Hühnchen-Geschmack und Zen mag Lachs. Bitte achte darauf, dass die Katzentür abends offen bleibt, damit sie nach ihrem Streifzug wieder rein können. Sie sind sehr selbstständig und brauchen nicht viel Aufmerksamkeit, freuen sich aber über ein paar Streicheleinheiten zwischendurch.",
     description:
       "Hi ich heisse Sandra, wohne in Zürich mit meinen zwei Katzen Joe und Zen. Dank der Katzentür haben sie Zugang zur Aussenwelt. Gerne verreise ich für ein paar Tage auf Städtetrips.",
+    fullDescription:
+      "Hi ich heisse Sandra, wohne in Zürich mit meinen zwei Katzen Joe und Zen. Dank der Katzentür haben sie Zugang zur Aussenwelt. Gerne verreise ich für ein paar Tage auf Städtetrips. Ich arbeite im Marketing und nutze jede Gelegenheit für Wochenendausflüge. Da ich selbst Katzensitterin bin, weiss ich genau, wie wichtig eine zuverlässige Betreuung ist. Meine beiden sind sehr unkompliziert und gewöhnt an Besucher.",
     rating: 4.9,
     reviewCount: 39,
   },
@@ -69,8 +75,12 @@ const sitterRequestsData: Record<
     dates: "15. November 2025",
     status: "Tausch",
     notes: "Beide Katzen sind ruhig und pflegeleicht. Fütterung morgens und abends mit Trockenfutter.",
+    fullNotes:
+      "Beide Katzen sind ruhig und pflegeleicht. Fütterung morgens und abends mit Trockenfutter. Joe trinkt gerne aus einem Brunnen, bitte diesen täglich auffüllen. Zen schläft am liebsten auf dem Sofa und ist sehr verschmust am Abend. Das Katzenklo bitte einmal täglich reinigen.",
     description:
       "Hallo, ich bin Adrian und habe zwei wunderbare Katzen. Ich reise gerne und suche jemanden, der sich liebevoll um meine Katzen kümmert.",
+    fullDescription:
+      "Hallo, ich bin Adrian und habe zwei wunderbare Katzen. Ich reise gerne und suche jemanden, der sich liebevoll um meine Katzen kümmert. Ich bin Softwareentwickler und arbeite manchmal remote von verschiedenen Orten aus. Meine Katzen sind an eine ruhige Umgebung gewöhnt und freuen sich über Gesellschaft, auch wenn sie nicht zu aufdringlich sein muss.",
     rating: 4.8,
     reviewCount: 25,
   },
@@ -93,8 +103,12 @@ const sitterRequestsData: Record<
     status: "Bezahlt",
     price: 45,
     notes: "Joe ist noch jung und sehr aktiv. Zen ist entspannt. Beide bekommen Nassfutter und Brekkies.",
+    fullNotes:
+      "Joe ist noch jung und sehr aktiv. Zen ist entspannt. Beide bekommen Nassfutter und Brekkies. Joe braucht viel Beschäftigung - bitte täglich mit der Federangel spielen. Zen ist schon älter und hat Spezialfutter, das im Schrank steht. Bitte das Futter nicht verwechseln. Joe schläft nachts manchmal im Bett, das ist völlig normal.",
     description:
       "Ich bin Anna und lebe mit meinen zwei Katzen in Zürich. Joe ist noch jung und verspielt, Zen ist schon älter und entspannter.",
+    fullDescription:
+      "Ich bin Anna und lebe mit meinen zwei Katzen in Zürich. Joe ist noch jung und verspielt, Zen ist schon älter und entspannter. Ich arbeite als Grafikdesignerin und reise gelegentlich zu Kunden oder für Inspiration. Die beiden haben sehr unterschiedliche Persönlichkeiten, was das Zusammenleben spannend macht. Joe hält mich auf Trab, während Zen für die Ruhe sorgt.",
     rating: 4.7,
     reviewCount: 18,
   },
@@ -111,8 +125,12 @@ const sitterRequestsData: Record<
     dates: "12.-15. November 2025",
     status: "Tausch",
     notes: "Meine Katzen sind Wohnungskatzen und sehr anhänglich. Sie brauchen viel Aufmerksamkeit.",
+    fullNotes:
+      "Meine Katzen sind Wohnungskatzen und sehr anhänglich. Sie brauchen viel Aufmerksamkeit. Joe folgt mir überall hin und miaut, wenn er alleine ist. Zen braucht tägliches Bürsten wegen seines langen Fells. Beide lieben Leckerlis und Spielzeit. Bitte mindestens 2-3 Stunden pro Tag bei ihnen verbringen.",
     description:
       "Hi, ich bin Charly. Meine Katzen sind Wohnungskatzen und sehr anhänglich. Sie lieben Gesellschaft und Streicheleinheiten.",
+    fullDescription:
+      "Hi, ich bin Charly. Meine Katzen sind Wohnungskatzen und sehr anhänglich. Sie lieben Gesellschaft und Streicheleinheiten. Ich arbeite normalerweise von zu Hause aus, daher sind die beiden es gewohnt, dass immer jemand da ist. Wenn ich verreise, brauchen sie definitiv jemanden, der Zeit mit ihnen verbringt. Sie sind sehr sozial und freundlich gegenüber allen Menschen.",
     rating: 4.9,
     reviewCount: 32,
   },
@@ -126,8 +144,12 @@ const sitterRequestsData: Record<
     dates: "5.-9. November 2025",
     status: "Tausch",
     notes: "Joe ist eine ältere Katze und sehr ruhig. Er braucht nur einmal täglich Futter und Wasser.",
+    fullNotes:
+      "Joe ist eine ältere Katze und sehr ruhig. Er braucht nur einmal täglich Futter und Wasser. Er schläft die meiste Zeit und ist sehr pflegeleicht. Einmal am Tag vorbeischauen reicht völlig aus. Er hat keine besonderen Bedürfnisse, freut sich aber über ein paar ruhige Streicheleinheiten. Sein Futter steht in der Küche bereit.",
     description:
       "Ich bin Esmeralda und habe eine ältere, sehr ruhige Katze. Joe ist pflegeleicht und genießt seine Ruhe.",
+    fullDescription:
+      "Ich bin Esmeralda und habe eine ältere, sehr ruhige Katze. Joe ist pflegeleicht und genießt seine Ruhe. Ich reise selten, aber wenn, dann weiss ich, dass Joe nicht viel Aufwand macht. Er ist schon seit vielen Jahren bei mir und hat seine Routine. Ein perfekter Mitbewohner für jemanden, der es gerne ruhig hat.",
     rating: 4.8,
     reviewCount: 21,
   },
@@ -147,8 +169,12 @@ const sitterRequestsData: Record<
     status: "Bezahlt",
     price: 50,
     notes: "Joe ist sehr freundlich und liebt Spielzeug. Bitte 2x täglich füttern und mit ihm spielen.",
+    fullNotes:
+      "Joe ist sehr freundlich und liebt Spielzeug. Bitte 2x täglich füttern und mit ihm spielen. Er hat eine große Sammlung an Spielzeugen - sein Favorit ist die rote Maus. Morgens um 7 Uhr und abends um 18 Uhr füttern. Er ist sehr energiegeladen und braucht mindestens 30 Minuten Spielzeit pro Tag. Er ist stubenrein und sehr sozial.",
     description:
       "Hallo, ich bin Flo. Meine Katze Joe ist sehr verspielt und freundlich. Er liebt es, mit Spielzeug zu spielen.",
+    fullDescription:
+      "Hallo, ich bin Flo. Meine Katze Joe ist sehr verspielt und freundlich. Er liebt es, mit Spielzeug zu spielen. Ich bin häufig beruflich unterwegs und suche deshalb regelmäßig nach zuverlässigen Sitterinnen und Sittern. Joe ist sehr unkompliziert und kommt mit allen Menschen gut zurecht. Er ist neugierig und freundlich.",
     rating: 4.9,
     reviewCount: 28,
   },
@@ -160,10 +186,41 @@ export default function FindCatsDetailPage() {
   const id = params.id as string
   const [showReviews, setShowReviews] = useState(false)
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false)
+  const [showFullDescription, setShowFullDescription] = useState(false)
+  const [showFullNotes, setShowFullNotes] = useState(false)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const request = sitterRequestsData[id]
+
+  const handleBookingConfirm = () => {
+    if (typeof window === "undefined") return
+
+    // Get existing appointments
+    const stored = localStorage.getItem("appointments")
+    const appointments = stored ? JSON.parse(stored) : []
+
+    // Create new pending appointment
+    const newAppointment = {
+      id: `pending-${Date.now()}`,
+      date: request.dates,
+      day: Number.parseInt(request.dates.split(".")[0].trim()) || new Date().getDate(),
+      month: 11, // November for demo
+      time: "Zeit wird bestätigt",
+      type: "pending-booking",
+      person: request.name,
+      image: request.image,
+      cats: request.cats.map((cat) => `${cat.name} 🐱`).join(" "),
+      color: "orange",
+      status: "pending",
+    }
+
+    // Add to appointments
+    appointments.push(newAppointment)
+    localStorage.setItem("appointments", JSON.stringify(appointments))
+
+    setShowBookingConfirmation(true)
+  }
 
   useEffect(() => {
     const container = scrollContainerRef.current
@@ -261,7 +318,9 @@ export default function FindCatsDetailPage() {
         <h1 className="text-3xl font-bold mb-4">{request.name}</h1>
 
         <p className="text-base leading-relaxed mb-2">{request.description}</p>
-        <button className="text-primary font-medium mb-6">mehr</button>
+        <button onClick={() => setShowFullDescription(true)} className="text-[#5682D3] font-medium mb-6">
+          mehr
+        </button>
 
         <div className="flex items-start gap-3 mb-8 text-muted-foreground">
           <MapPin className="w-6 h-6 mt-0.5 flex-shrink-0" />
@@ -299,24 +358,29 @@ export default function FindCatsDetailPage() {
           </div>
         )}
 
-        {/* Notes */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-2">Notizen</h2>
-          <p className="text-foreground leading-relaxed">{request.notes}</p>
+          <p className="text-foreground leading-relaxed mb-2">{request.notes}</p>
+          <button onClick={() => setShowFullNotes(true)} className="text-[#5682D3] font-medium">
+            mehr
+          </button>
         </div>
 
         <div className="space-y-3">
-          <Link href={`/sitter/find-cats/${id}/message`} className="block">
+          <Link
+            href={`/sitter/find-cats/${id}/message`}
+            className="block"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                sessionStorage.setItem("messageRecipient", request.name)
+              }
+            }}
+          >
             <Button className="w-full text-lg" size="lg">
               Kontaktieren
             </Button>
           </Link>
-          <Button
-            variant="outline"
-            className="w-full text-lg bg-transparent"
-            size="lg"
-            onClick={() => setShowBookingConfirmation(true)}
-          >
+          <Button variant="outline" className="w-full text-lg bg-transparent" size="lg" onClick={handleBookingConfirm}>
             Buchen
           </Button>
         </div>
@@ -372,19 +436,74 @@ export default function FindCatsDetailPage() {
         </>
       )}
 
-      {showBookingConfirmation && (
+      {showFullDescription && (
         <>
           <div
             className="fixed inset-0 bg-black/50 z-40 animate-in fade-in"
-            onClick={() => setShowBookingConfirmation(false)}
+            onClick={() => setShowFullDescription(false)}
           />
-          <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 bg-background rounded-2xl p-6 max-w-md mx-auto animate-in zoom-in-95 duration-200">
-            <p className="text-lg leading-relaxed text-center mb-6">
-              Vielen Dank! Sobald deine Buchung von {request.name} bestätigt wurde wirst du von uns kontaktiert.
-            </p>
-            <Button className="w-full" onClick={() => setShowBookingConfirmation(false)}>
-              Schliessen
-            </Button>
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[85vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="sticky top-0 bg-background border-b px-4 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Über {request.name}</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowFullDescription(false)}>
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(85vh-64px)] px-4 py-6">
+              <p className="text-base leading-relaxed">{request.fullDescription}</p>
+            </div>
+          </div>
+        </>
+      )}
+
+      {showFullNotes && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-40 animate-in fade-in" onClick={() => setShowFullNotes(false)} />
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[85vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="sticky top-0 bg-background border-b px-4 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Notizen</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowFullNotes(false)}>
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(85vh-64px)] px-4 py-6">
+              <p className="text-base leading-relaxed">{request.fullNotes}</p>
+            </div>
+          </div>
+        </>
+      )}
+
+      {showBookingConfirmation && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-xl">
+              <h2 className="text-xl font-bold mb-4 text-center">Buchungsanfrage gesendet</h2>
+              <p className="text-center text-muted-foreground mb-6 leading-relaxed">
+                Vielen Dank! Sobald deine Buchung von {request.name} bestätigt wurde, wirst du von uns kontaktiert. Du
+                findest die Anfrage bei deinen Terminen.
+              </p>
+              <div className="space-y-2">
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    setShowBookingConfirmation(false)
+                    router.push("/termine")
+                  }}
+                >
+                  Zu meinen Terminen
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full bg-transparent"
+                  onClick={() => {
+                    setShowBookingConfirmation(false)
+                    router.back()
+                  }}
+                >
+                  Zurück
+                </Button>
+              </div>
+            </div>
           </div>
         </>
       )}

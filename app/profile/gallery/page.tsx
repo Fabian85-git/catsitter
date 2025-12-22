@@ -5,72 +5,13 @@ import type React from "react"
 import { ArrowLeft, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { useState, useEffect, useRef } from "react"
-
-interface Photo {
-  id: string
-  url: string
-  timestamp: number
-}
+import { useRef } from "react"
+import { useGallery } from "@/lib/hooks/use-gallery"
 
 export default function GalleryPage() {
   const router = useRouter()
-  const [photos, setPhotos] = useState<Photo[]>([])
+  const { photos, addPhoto, deletePhoto } = useGallery()
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const savedPhotos = localStorage.getItem("userGallery")
-    if (savedPhotos) {
-      const parsed = JSON.parse(savedPhotos)
-      if (parsed.length > 0) {
-        setPhotos(parsed)
-        return
-      }
-    }
-
-    // Initialize with default photos if none exist
-    const defaultPhotos: Photo[] = [
-      {
-        id: "default-1",
-        url: "/happy-orange-tabby-cat-portrait.jpg",
-        timestamp: Date.now() - 7 * 24 * 60 * 60 * 1000, // 7 days ago
-      },
-      {
-        id: "default-2",
-        url: "/woman-with-cat-selfie.jpg",
-        timestamp: Date.now() - 6 * 24 * 60 * 60 * 1000,
-      },
-      {
-        id: "default-3",
-        url: "/grey-cat-playing-with-toy.jpg",
-        timestamp: Date.now() - 5 * 24 * 60 * 60 * 1000,
-      },
-      {
-        id: "default-4",
-        url: "/cute-kitten-sleeping.jpg",
-        timestamp: Date.now() - 4 * 24 * 60 * 60 * 1000,
-      },
-      {
-        id: "default-5",
-        url: "/cat-sitting-by-window.jpg",
-        timestamp: Date.now() - 3 * 24 * 60 * 60 * 1000,
-      },
-      {
-        id: "default-6",
-        url: "/person-holding-cat.jpg",
-        timestamp: Date.now() - 2 * 24 * 60 * 60 * 1000,
-      },
-    ]
-    setPhotos(defaultPhotos)
-    localStorage.setItem("userGallery", JSON.stringify(defaultPhotos))
-  }, [])
-
-  // Save photos to localStorage whenever they change
-  useEffect(() => {
-    if (photos.length > 0) {
-      localStorage.setItem("userGallery", JSON.stringify(photos))
-    }
-  }, [photos])
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -79,12 +20,7 @@ export default function GalleryPage() {
     Array.from(files).forEach((file) => {
       const reader = new FileReader()
       reader.onloadend = () => {
-        const newPhoto: Photo = {
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-          url: reader.result as string,
-          timestamp: Date.now(),
-        }
-        setPhotos((prev) => [newPhoto, ...prev])
+        addPhoto(reader.result as string)
       }
       reader.readAsDataURL(file)
     })
@@ -93,14 +29,6 @@ export default function GalleryPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
-  }
-
-  const handleDelete = (id: string) => {
-    setPhotos((prev) => {
-      const updated = prev.filter((photo) => photo.id !== id)
-      localStorage.setItem("userGallery", JSON.stringify(updated))
-      return updated
-    })
   }
 
   return (
@@ -163,7 +91,7 @@ export default function GalleryPage() {
                   variant="destructive"
                   size="icon"
                   className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8"
-                  onClick={() => handleDelete(photo.id)}
+                  onClick={() => deletePhoto(photo.id)}
                 >
                   <X className="w-4 h-4" />
                 </Button>

@@ -6,12 +6,35 @@ import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { chatsStore, messagesStore } from "@/lib/data-store"
+import { getSitterByName } from "@/lib/sitter-data"
 
 export default function MessageCharlyPage() {
   const router = useRouter()
   const [message, setMessage] = useState("")
 
   const handleSend = () => {
+    if (message.trim()) {
+      const sitter = getSitterByName("Charly")
+      if (sitter) {
+        chatsStore.createOrUpdate({
+          id: sitter.id,
+          userId: sitter.id,
+          userName: sitter.name,
+          userAvatar: sitter.avatar,
+          lastMessage: message.trim(),
+        })
+
+        messagesStore.add(sitter.id, {
+          senderId: "default-user",
+          receiverId: sitter.id,
+          content: message.trim(),
+          timestamp: new Date().toISOString(),
+          read: false,
+        })
+      }
+    }
+
     router.push("/sitter/connect/charly/message/sent")
   }
 

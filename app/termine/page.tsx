@@ -4,148 +4,184 @@ import { AppHeader } from "@/components/app-header"
 import { BottomNav } from "@/components/bottom-nav"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, List, CalendarIcon, ChevronLeft, ChevronDown } from "lucide-react"
+import { ChevronRight, List, CalendarIcon, ChevronLeft } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 
 export default function TerminePage() {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list")
-  const [selectedDate, setSelectedDate] = useState(13) // November 13, 2025
+  const [selectedDate, setSelectedDate] = useState(13)
   const [currentMonth, setCurrentMonth] = useState("November 2025")
 
-  const appointments = [
-    {
-      id: 1,
-      date: "28. September 2025",
-      day: 28,
-      month: 9,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Anna",
-      image: "/smiling-brown-haired-woman.png",
-      cats: "Blanca & Bionda 🐱 🐱",
-      color: "blue",
-    },
-    {
-      id: 2,
-      date: "30. September 2025",
-      day: 30,
-      month: 9,
-      time: "8:00 - 8:30 Uhr\n17:00 - 17:30 Uhr",
-      type: "sitting",
-      person: "Tommy",
-      image: "/grey-tabby-cat-face.jpg",
-      cats: "El Negro 🐱",
-      note: "Notiz: 2x nur füttern",
-      color: "blue",
-    },
-    {
-      id: 3,
-      date: "11. Oktober 2025",
-      day: 11,
-      month: 10,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Anna",
-      image: "/smiling-brown-haired-woman.png",
-      cats: "Blanca & Bionda 🐱 🐱",
-      color: "blue",
-    },
-    {
-      id: 4,
-      date: "2. November 2025",
-      day: 2,
-      month: 11,
-      time: "2x täglich",
-      type: "being-sat",
-      person: "Sandra",
-      image: "/blonde-woman-portrait.png",
-      color: "pink",
-    },
-    {
-      id: 5,
-      date: "3. November 2025",
-      day: 3,
-      month: 11,
-      time: "2x täglich",
-      type: "being-sat",
-      person: "Charly",
-      image: "/dark-haired-man.png",
-      color: "pink",
-    },
-    {
-      id: 6,
-      date: "12. November 2025",
-      day: 12,
-      month: 11,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Anna",
-      image: "/smiling-brown-haired-woman.png",
-      cats: "Blanca & Bionda 🐱 🐱",
-      color: "blue",
-    },
-    {
-      id: 7,
-      date: "13. November 2025",
-      day: 13,
-      month: 11,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Anna",
-      image: "/smiling-brown-haired-woman.png",
-      cats: "Blanca & Bionda 🐱 🐱",
-      color: "blue",
-    },
-    {
-      id: 8,
-      date: "28. November 2025",
-      day: 28,
-      month: 11,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Anna",
-      image: "/smiling-brown-haired-woman.png",
-      cats: "Blanca & Bionda 🐱 🐱",
-      color: "blue",
-    },
-    {
-      id: 9,
-      date: "30. November 2025",
-      day: 30,
-      month: 11,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Anna",
-      image: "/smiling-brown-haired-woman.png",
-      cats: "Blanca & Bionda 🐱 🐱",
-      color: "blue",
-    },
-    {
-      id: 10,
-      date: "6. November 2025",
-      day: 6,
-      month: 11,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Tommy",
-      image: "/grey-tabby-cat-face.jpg",
-      cats: "El Negro 🐱",
-      color: "blue",
-    },
-    {
-      id: 11,
-      date: "9. November 2025",
-      day: 9,
-      month: 11,
-      time: "9:00 - 10:00 Uhr",
-      type: "sitting",
-      person: "Tommy",
-      image: "/grey-tabby-cat-face.jpg",
-      cats: "El Negro 🐱",
-      color: "blue",
-    },
-  ]
+  const getAppointments = () => {
+    if (typeof window === "undefined") return []
+    const stored = localStorage.getItem("appointments")
+    if (!stored) {
+      // Initialize with default appointments
+      const defaultAppointments = [
+        {
+          id: "1",
+          date: "28. September 2025",
+          day: 28,
+          month: 9,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Anna",
+          image: "/smiling-brown-haired-woman.png",
+          cats: "Blanca & Bionda 🐱 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "2",
+          date: "30. September 2025",
+          day: 30,
+          month: 9,
+          time: "8:00 - 8:30 Uhr\n17:00 - 17:30 Uhr",
+          type: "sitting",
+          person: "Tommy",
+          image: "/grey-tabby-cat-face.jpg",
+          cats: "El Negro 🐱",
+          note: "Notiz: 2x nur füttern",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "3",
+          date: "11. Oktober 2025",
+          day: 11,
+          month: 10,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Anna",
+          image: "/smiling-brown-haired-woman.png",
+          cats: "Blanca & Bionda 🐱 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "4",
+          date: "2. November 2025",
+          day: 2,
+          month: 11,
+          time: "2x täglich",
+          type: "being-sat",
+          person: "Sandra",
+          image: "/blonde-woman-portrait.png",
+          color: "pink",
+          status: "confirmed",
+        },
+        {
+          id: "5",
+          date: "3. November 2025",
+          day: 3,
+          month: 11,
+          time: "2x täglich",
+          type: "being-sat",
+          person: "Charly",
+          image: "/dark-haired-man.png",
+          color: "pink",
+          status: "confirmed",
+        },
+        {
+          id: "6",
+          date: "12. November 2025",
+          day: 12,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Anna",
+          image: "/smiling-brown-haired-woman.png",
+          cats: "Blanca & Bionda 🐱 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "7",
+          date: "13. November 2025",
+          day: 13,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Anna",
+          image: "/smiling-brown-haired-woman.png",
+          cats: "Blanca & Bionda 🐱 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "8",
+          date: "28. November 2025",
+          day: 28,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Anna",
+          image: "/smiling-brown-haired-woman.png",
+          cats: "Blanca & Bionda 🐱 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "9",
+          date: "30. November 2025",
+          day: 30,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Anna",
+          image: "/smiling-brown-haired-woman.png",
+          cats: "Blanca & Bionda 🐱 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "10",
+          date: "6. November 2025",
+          day: 6,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Tommy",
+          image: "/grey-tabby-cat-face.jpg",
+          cats: "El Negro 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "11",
+          date: "9. November 2025",
+          day: 9,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "sitting",
+          person: "Tommy",
+          image: "/grey-tabby-cat-face.jpg",
+          cats: "El Negro 🐱",
+          color: "blue",
+          status: "confirmed",
+        },
+        {
+          id: "12",
+          date: "15. November 2025",
+          day: 15,
+          month: 11,
+          time: "9:00 - 10:00 Uhr",
+          type: "pending-booking",
+          person: "John",
+          image: "/businessman.png",
+          cats: "Charlie 🐱",
+          color: "orange",
+          status: "pending",
+        },
+      ]
+      localStorage.setItem("appointments", JSON.stringify(defaultAppointments))
+      return defaultAppointments
+    }
+    return JSON.parse(stored)
+  }
+
+  const appointments = getAppointments()
 
   const getAppointmentsForDay = (day: number) => {
     return appointments.filter((apt) => apt.day === day && apt.month === 11)
@@ -223,11 +259,20 @@ export default function TerminePage() {
             {appointments.map((appointment) => (
               <Card
                 key={appointment.id}
-                className={`p-2 border-l-8 shadow-xs ${appointment.color === "blue" ? "border-l-[#5682D3]" : "border-l-pink-500"}`}
+                className={`p-2 border-l-8 shadow-xs ${
+                  appointment.color === "blue"
+                    ? "border-l-[#5682D3]"
+                    : appointment.color === "pink"
+                      ? "border-l-pink-500"
+                      : "border-l-orange-500"
+                }`}
               >
                 <div className="flex items-start justify-between mb-1">
                   <div>
                     <p className="font-semibold text-lg">{appointment.date}</p>
+                    {appointment.status === "pending" && (
+                      <p className="text-xs text-orange-600 font-medium mt-1">⏳ Noch nicht bestätigter Termin</p>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-medium whitespace-pre-line">{appointment.time}</p>
@@ -252,8 +297,16 @@ export default function TerminePage() {
                           <p className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">{appointment.note}</p>
                         )}
                       </>
-                    ) : (
+                    ) : appointment.type === "being-sat" ? (
                       <p className="font-semibold text-foreground">{appointment.person}</p>
+                    ) : (
+                      <>
+                        <p className="text-sm text-muted-foreground">
+                          Buchungsanfrage bei{" "}
+                          <span className="font-semibold text-foreground">{appointment.person}</span>
+                        </p>
+                        <p className="text-sm">{appointment.cats}</p>
+                      </>
                     )}
                   </div>
                 </div>
@@ -300,6 +353,7 @@ export default function TerminePage() {
                   const dayAppointments = dayObj.isCurrentMonth ? getAppointmentsForDay(dayObj.day) : []
                   const hasBlueAppointment = dayAppointments.some((apt) => apt.color === "blue")
                   const hasPinkAppointment = dayAppointments.some((apt) => apt.color === "pink")
+                  const hasOrangeAppointment = dayAppointments.some((apt) => apt.color === "orange")
                   const isSelected = dayObj.day === selectedDate && dayObj.isCurrentMonth
 
                   return (
@@ -313,10 +367,11 @@ export default function TerminePage() {
                       `}
                     >
                       <span>{dayObj.day}</span>
-                      {dayObj.isCurrentMonth && (hasBlueAppointment || hasPinkAppointment) && (
+                      {dayObj.isCurrentMonth && (hasBlueAppointment || hasPinkAppointment || hasOrangeAppointment) && (
                         <div className="flex gap-1 absolute bottom-1">
                           {hasBlueAppointment && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
                           {hasPinkAppointment && <div className="w-1.5 h-1.5 rounded-full bg-pink-500" />}
+                          {hasOrangeAppointment && <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />}
                         </div>
                       )}
                     </button>
@@ -333,14 +388,26 @@ export default function TerminePage() {
                   {selectedAppointments.map((appointment) => (
                     <Card key={appointment.id} className="p-4 bg-muted">
                       <div className="flex items-start justify-between mb-2">
-                        <p className="font-semibold text-lg">{appointment.date}</p>
+                        <div>
+                          <p className="font-semibold text-lg">{appointment.date}</p>
+                          {appointment.status === "pending" && (
+                            <p className="text-xs text-orange-600 font-medium mt-1">⏳ Noch nicht bestätigter Termin</p>
+                          )}
+                        </div>
                         <p className="text-sm font-medium">{appointment.time}</p>
                       </div>
                       {appointment.type === "sitting" && <p className="text-sm mb-3">Sitten bei {appointment.cats}</p>}
-                      <Button variant="ghost" className="w-full justify-between px-0 hover:bg-transparent">
-                        <span>Notizen und Adresse</span>
-                        <ChevronDown className="w-4 h-4" />
-                      </Button>
+                      {appointment.type === "pending-booking" && (
+                        <p className="text-sm mb-3">Buchungsanfrage bei {appointment.person}</p>
+                      )}
+                      <div className="flex justify-end">
+                        <Link href={`/termine/${appointment.id}`}>
+                          <Button variant="ghost" size="sm" className="gap-1 h-8">
+                            Details
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      </div>
                     </Card>
                   ))}
                 </div>

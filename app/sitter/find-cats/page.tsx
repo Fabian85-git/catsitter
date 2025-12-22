@@ -5,63 +5,7 @@ import { ArrowLeft, Calendar, ChevronRight, List, Map, SlidersHorizontal } from 
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-
-const sitterRequests = [
-  {
-    id: 1,
-    name: "Sandra",
-    image: "/orange-tabby-cat.jpg",
-    cats: "Katzen Joe & Zen",
-    distance: "ca. 60m entfernt",
-    dates: "2.-3. November 2025",
-    status: "Tausch",
-  },
-  {
-    id: 2,
-    name: "Adrian",
-    image: "/grey-white-cat.jpg",
-    cats: "Katzen Joe & Zen",
-    distance: "ca. 90m entfernt",
-    dates: "15. November 2025",
-    status: "Tausch",
-  },
-  {
-    id: 3,
-    name: "Anna",
-    image: "/smiling-brown-haired-woman.png",
-    cats: "Katzen Joe & Zen",
-    distance: "ca. 120m entfernt",
-    dates: "1.-7. November 2025",
-    status: "Bezahlt",
-  },
-  {
-    id: 4,
-    name: "Charly",
-    image: "/dark-haired-man.png",
-    cats: "Katzen Joe & Zen",
-    distance: "ca. 210m entfernt",
-    dates: "12.-15. November 2025",
-    status: "Tausch",
-  },
-  {
-    id: 5,
-    name: "Esmeralda",
-    image: "/fluffy-persian-cat.jpg",
-    cats: "Katze Joe",
-    distance: "ca. 40m entfernt",
-    dates: "5.-9. November 2025",
-    status: "Tausch",
-  },
-  {
-    id: 6,
-    name: "Flo",
-    image: "/bearded-man.jpg",
-    cats: "Katze Joe",
-    distance: "ca. 40m entfernt",
-    dates: "5.-9. November 2025",
-    status: "Bezahlt",
-  },
-]
+import { findCatsOwners } from "@/lib/find-cats-data"
 
 export default function FindCatsPage() {
   const [viewMode, setViewMode] = useState<"list" | "map">("list")
@@ -113,7 +57,7 @@ export default function FindCatsPage() {
       <main className="px-4">
         {viewMode === "list" ? (
           <div className="divide-y">
-            {sitterRequests.map((request) => (
+            {findCatsOwners.map((request) => (
               <Link href={`/sitter/find-cats/${request.id}`} key={request.id} className="block">
                 <div className="py-4 flex items-center gap-4">
                   <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-muted">
@@ -155,7 +99,7 @@ export default function FindCatsPage() {
             />
             {/* Overlay markers for each sitter request */}
             <div className="absolute inset-0 pointer-events-none">
-              {sitterRequests.map((request, index) => (
+              {findCatsOwners.map((request, index) => (
                 <Link key={request.id} href={`/sitter/find-cats/${request.id}`} className="pointer-events-auto">
                   <div
                     className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"

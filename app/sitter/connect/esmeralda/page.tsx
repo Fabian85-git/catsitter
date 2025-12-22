@@ -10,6 +10,7 @@ export default function EsmeraldaProfilePage() {
   const [showReviews, setShowReviews] = useState(false)
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [showDescription, setShowDescription] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const photos = [
@@ -106,7 +107,9 @@ export default function EsmeraldaProfilePage() {
           Hallo zusammen! Ich bin Esmeralda und habe zwei süsse Kater Joe und Zen. Ich arbeite teilweise von zu Hause
           und kann mich daher gut um Katzen kümmern. Meine Wohnung hat einen grossen Balkon, den die Katzen lieben.
         </p>
-        <button className="text-primary font-medium mb-6">mehr</button>
+        <button className="text-primary font-medium mb-6" onClick={() => setShowDescription(true)}>
+          mehr
+        </button>
 
         <div className="flex items-start gap-3 mb-8 text-muted-foreground">
           <svg className="w-6 h-6 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,6 +216,36 @@ export default function EsmeraldaProfilePage() {
             <Button className="w-full rounded-full h-12" onClick={() => setShowBookingConfirmation(false)}>
               Schliessen
             </Button>
+          </div>
+        </>
+      )}
+
+      {showDescription && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 animate-in fade-in"
+            onClick={() => setShowDescription(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[85vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="sticky top-0 bg-background border-b px-4 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Über Esmeralda</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowDescription(false)}>
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(85vh-64px)] px-4 py-6">
+              <p className="text-base leading-relaxed">
+                Hallo zusammen! Ich bin Esmeralda und habe zwei süsse Kater Joe und Zen. Ich arbeite teilweise von zu
+                Hause und kann mich daher gut um Katzen kümmern. Meine Wohnung hat einen grossen Balkon, den die Katzen
+                lieben und wo sie sicher die Sonne geniessen können.
+                <br />
+                <br />
+                Joe und Zen sind drei Jahre alt und sehr verschmust. Sie lieben es, auf dem Balkon zu liegen und die
+                Umgebung zu beobachten. Da ich oft im Homeoffice bin, haben die Katzen immer Gesellschaft. Ich habe
+                mehrere Jahre Erfahrung mit Katzenbetreuung und verstehe ihre Bedürfnisse gut. Meine Wohnung ist
+                grosszügig und bietet viel Platz zum Spielen und Entspannen.
+              </p>
+            </div>
           </div>
         </>
       )}

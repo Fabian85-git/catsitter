@@ -4,52 +4,37 @@ import { ArrowLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { chatsStore } from "@/lib/data-store"
+import type { Chat } from "@/lib/types"
 
 export default function MessagesPage() {
   const router = useRouter()
+  const [conversations, setConversations] = useState<Chat[]>([])
 
-  const conversations = [
-    {
-      id: "sandra",
-      name: "Sandra",
-      avatar: "/diverse-woman-portrait.png",
-      lastMessage: "Danke für die Info! Bis dann 😊",
-      timestamp: "Heute, 14:30",
-      unread: false,
-    },
-    {
-      id: "tommy",
-      name: "Tommy",
-      avatar: "/thoughtful-man-portrait.png",
-      lastMessage: "Können wir den Termin verschieben?",
-      timestamp: "Gestern",
-      unread: true,
-    },
-    {
-      id: "anna-kim",
-      name: "Anna & Kim",
-      avatar: "/woman-portrait.png",
-      lastMessage: "Perfekt, ich freue mich!",
-      timestamp: "Mo",
-      unread: false,
-    },
-    {
-      id: "charly",
-      name: "Charly",
-      avatar: "/man-portrait-glasses.png",
-      lastMessage: "Hast du noch Fragen zu meinen Katzen?",
-      timestamp: "So",
-      unread: false,
-    },
-    {
-      id: "esmeralda",
-      name: "Esmeralda",
-      avatar: "/woman-portrait-curly-hair.jpg",
-      lastMessage: "Vielen Dank für deine Hilfe!",
-      timestamp: "Fr",
-      unread: false,
-    },
-  ]
+  useEffect(() => {
+    const loadChats = () => {
+      setConversations(chatsStore.getAll())
+    }
+
+    loadChats()
+
+    // Reload when page becomes visible
+    const handleFocus = () => {
+      loadChats()
+    }
+
+    window.addEventListener("focus", handleFocus)
+    return () => window.removeEventListener("focus", handleFocus)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setConversations(chatsStore.getAll())
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,8 +62,8 @@ export default function MessagesPage() {
                 <div className="relative flex-shrink-0">
                   <div className="w-14 h-14 rounded-full bg-muted overflow-hidden">
                     <img
-                      src={conversation.avatar || "/placeholder.svg"}
-                      alt={conversation.name}
+                      src={conversation.userAvatar || "/placeholder.svg"}
+                      alt={conversation.userName}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -93,7 +78,7 @@ export default function MessagesPage() {
                     <h3
                       className={`font-semibold truncate ${conversation.unread ? "text-foreground" : "text-foreground"}`}
                     >
-                      {conversation.name}
+                      {conversation.userName}
                     </h3>
                     <span className="text-xs text-muted-foreground flex-shrink-0">{conversation.timestamp}</span>
                   </div>

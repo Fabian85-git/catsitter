@@ -9,65 +9,65 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { useAbsences } from "@/lib/hooks/use-absences"
+
+const DEMO_ABSENCE = {
+  id: "demo-sommerferien",
+  userId: "current-user",
+  title: "Sommerferien Italien",
+  dates: "15.07.25 - 29.07.25",
+  time: "8:00 - 8:30 Uhr, 17:00 - 17:30 Uhr",
+  frequency: "2x täglich - morgen / abends",
+  notes: "Unsere Katze Mimi braucht zweimal täglich Futter und frisches Wasser. Sie liebt es am Fenster zu sitzen.",
+  type: "Bezahlt" as const,
+  status: "assigned" as const,
+  sitterName: "Sandra", // Updated sitterName to "Sandra" (without "M.") so getSitterByName() can find the profile
+  sitterLocation: "Zürich",
+  sitterDistance: "0.5 km",
+  sitterRating: 4.9,
+  sitterReviews: 28,
+  createdAt: "2025-06-01T10:00:00.000Z",
+}
 
 export default function MyAbsencesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [absences, setAbsences] = useState([
-    {
-      id: 1,
-      title: "Wanderweekend",
-      status: "assigned",
-      sitterName: "Sandra",
-      dates: "2.-3.11.2025",
-      frequency: "2x täglich - morgen / abends",
-      notes: "Notiz: Nassfutter und Brekkies oder so...",
-      type: "Tausch",
-    },
-    {
-      id: 2,
-      title: "Neujahr",
-      status: "open",
-      dates: "28.12.25 - 2.1.26",
-      frequency: "2x täglich - morgen / abends",
-      notes: "Notiz: Nassfutter und Brekkies oder so...",
-      type: "Tausch",
-    },
-    {
-      id: 3,
-      title: "Städtetrip",
-      status: "open",
-      dates: "19.1.-23.1.2026",
-      frequency: "2x täglich - morgen / abends",
-      notes: "Notiz: Nassfutter und Brekkies oder so...",
-      type: "Tausch",
-    },
-  ])
+  const { absences, addAbsence } = useAbsences()
+
+  const allAbsences = [DEMO_ABSENCE, ...absences]
 
   const [formData, setFormData] = useState({
     title: "",
-    dates: "",
+    startDate: "",
+    endDate: "",
+    time: "",
     frequency: "2x täglich - morgen / abends",
     notes: "",
-    type: "Tausch",
+    type: "Tausch" as "Tausch" | "Bezahlt",
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const newAbsence = {
-      id: absences.length + 1,
+    const formattedDates = formData.endDate
+      ? `${new Date(formData.startDate).toLocaleDateString("de-CH", { day: "numeric", month: "numeric", year: "2-digit" })} - ${new Date(formData.endDate).toLocaleDateString("de-CH", { day: "numeric", month: "numeric", year: "2-digit" })}`
+      : new Date(formData.startDate).toLocaleDateString("de-CH", { day: "numeric", month: "numeric", year: "2-digit" })
+
+    addAbsence({
+      userId: "current-user",
       title: formData.title,
-      status: "open",
-      dates: formData.dates,
+      dates: formattedDates,
+      time: formData.time,
       frequency: formData.frequency,
       notes: formData.notes,
       type: formData.type,
-    }
-    setAbsences([newAbsence, ...absences])
+      status: "open",
+    })
+
     setIsModalOpen(false)
-    // Reset form
     setFormData({
       title: "",
-      dates: "",
+      startDate: "",
+      endDate: "",
+      time: "",
       frequency: "2x täglich - morgen / abends",
       notes: "",
       type: "Tausch",
@@ -99,7 +99,8 @@ export default function MyAbsencesPage() {
         <h2 className="text-2xl font-bold mb-4">Meine Abwesenheiten</h2>
 
         <div className="space-y-6">
-          {absences.map((absence, index) => (
+          {allAbsences.length === 0 && <p className="text-muted-foreground">Noch keine Abwesenheiten erfasst.</p>}
+          {allAbsences.map((absence, index) => (
             <div key={absence.id}>
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
@@ -121,6 +122,13 @@ export default function MyAbsencesPage() {
                   <span>{absence.dates}</span>
                 </div>
 
+                {absence.time && (
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Clock className="w-5 h-5" />
+                    <span>{absence.time}</span>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 text-foreground">
                   <Clock className="w-5 h-5" />
                   <span>{absence.frequency}</span>
@@ -128,7 +136,7 @@ export default function MyAbsencesPage() {
 
                 <p className="text-foreground">{absence.notes}</p>
 
-                {absence.status === "open" && (
+                {absence.status !== "assigned" && (
                   <Link href={`/sitter/my-absences/${absence.id}/available-sitters`}>
                     <Button variant="outline" className="w-full max-w-md h-12 justify-between bg-transparent">
                       Verfügbare Sitter anzeigen
@@ -147,7 +155,7 @@ export default function MyAbsencesPage() {
                 </div>
               </div>
 
-              {index < absences.length - 1 && <div className="border-t mt-6" />}
+              {index < allAbsences.length - 1 && <div className="border-t mt-6" />}
             </div>
           ))}
         </div>
@@ -178,13 +186,42 @@ export default function MyAbsencesPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="dates">Datum</Label>
+                  <Label htmlFor="startDate">Von Datum</Label>
+                  <div className="relative">
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                      required
+                      className="pr-10"
+                    />
+                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="endDate">Bis Datum (optional)</Label>
+                  <div className="relative">
+                    <Input
+                      id="endDate"
+                      type="date"
+                      value={formData.endDate}
+                      onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                      min={formData.startDate}
+                      className="pr-10"
+                    />
+                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="time">Uhrzeit (optional)</Label>
                   <Input
-                    id="dates"
-                    placeholder="z.B. 15.-20.8.2025"
-                    value={formData.dates}
-                    onChange={(e) => setFormData({ ...formData, dates: e.target.value })}
-                    required
+                    id="time"
+                    placeholder="z.B. 8:00 - 8:30 Uhr, 17:00 - 17:30 Uhr"
+                    value={formData.time}
+                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                   />
                 </div>
 

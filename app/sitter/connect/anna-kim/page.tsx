@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from "react"
 export default function AnnaKimProfilePage() {
   const [showReviews, setShowReviews] = useState(false)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [showDescription, setShowDescription] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const photos = [
@@ -106,7 +107,9 @@ export default function AnnaKimProfilePage() {
           Wir sind Anna und Kim, ein Paar das Katzen über alles liebt! Wir haben zwei verspielte Kater Joe und Zen und
           freuen uns immer, andere Katzen kennenzulernen. Wir wohnen in einer grossen Wohnung mit Balkon.
         </p>
-        <button className="text-primary font-medium mb-6">mehr</button>
+        <button className="text-primary font-medium mb-6" onClick={() => setShowDescription(true)}>
+          mehr
+        </button>
 
         <div className="flex items-start gap-3 mb-8 text-muted-foreground">
           <svg className="w-6 h-6 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,6 +198,36 @@ export default function AnnaKimProfilePage() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {showDescription && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 animate-in fade-in"
+            onClick={() => setShowDescription(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[85vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="sticky top-0 bg-background border-b px-4 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Über Anna & Kim</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowDescription(false)}>
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(85vh-64px)] px-4 py-6">
+              <p className="text-base leading-relaxed">
+                Wir sind Anna und Kim, ein Paar das Katzen über alles liebt! Wir haben zwei verspielte Kater Joe und Zen
+                und freuen uns immer, andere Katzen kennenzulernen. Wir wohnen in einer grossen Wohnung mit Balkon, wo
+                die Katzen sicher die frische Luft geniessen können.
+                <br />
+                <br />
+                Joe und Zen sind Geschwister und zwei Jahre alt. Sie sind sehr verspielt und neugierig, aber auch
+                verschmust. Da wir beide flexible Arbeitszeiten haben, ist meistens jemand zu Hause. Wir haben viel
+                Erfahrung mit Katzen und kennen uns auch mit besonderen Bedürfnissen aus. Unsere Wohnung ist vollständig
+                katzensicher und wir haben verschiedene Spiel- und Rückzugsmöglichkeiten geschaffen.
+              </p>
             </div>
           </div>
         </>

@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from "react"
 export default function CharlyProfilePage() {
   const [showReviews, setShowReviews] = useState(false)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [showDescription, setShowDescription] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const photos = [
@@ -102,7 +103,9 @@ export default function CharlyProfilePage() {
           Hey, ich bin Charly und habe drei wunderbare Kater: Tom, Speedy und Sylvester. Ich liebe Katzen und habe viel
           Erfahrung in der Betreuung. Meine Wohnung ist katzenfreundlich eingerichtet mit vielen Spielmöglichkeiten.
         </p>
-        <button className="text-primary font-medium mb-6">mehr</button>
+        <button className="text-primary font-medium mb-6" onClick={() => setShowDescription(true)}>
+          mehr
+        </button>
 
         <div className="flex items-start gap-3 mb-8 text-muted-foreground">
           <svg className="w-6 h-6 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,6 +154,37 @@ export default function CharlyProfilePage() {
           </Link>
         </div>
       </main>
+
+      {showDescription && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 animate-in fade-in"
+            onClick={() => setShowDescription(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[85vh] overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="sticky top-0 bg-background border-b px-4 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Über Charly</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowDescription(false)}>
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(85vh-64px)] px-4 py-6">
+              <p className="text-base leading-relaxed">
+                Hey, ich bin Charly und habe drei wunderbare Kater: Tom, Speedy und Sylvester. Ich liebe Katzen und habe
+                viel Erfahrung in der Betreuung. Meine Wohnung ist katzenfreundlich eingerichtet mit vielen
+                Spielmöglichkeiten, Kratzbäumen in jedem Zimmer und gemütlichen Kuschelplätzen.
+                <br />
+                <br />
+                Tom ist der Älteste mit 4 Jahren und sehr ruhig und gelassen. Speedy ist mit 2 Jahren der wildeste und
+                liebt es zu rennen und zu spielen. Sylvester ist 6 Jahre alt und ein echter Gentleman. Alle drei sind
+                sehr sozial und freundlich gegenüber anderen Katzen. Ich habe flexible Arbeitszeiten und kann mich gut
+                um Besucherkatzen kümmern. Besonders bei längeren Aufenthalten sorge ich dafür, dass sich alle wohl
+                fühlen.
+              </p>
+            </div>
+          </div>
+        </>
+      )}
 
       {showReviews && (
         <>

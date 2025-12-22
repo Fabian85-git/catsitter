@@ -1,44 +1,83 @@
+"use client"
+
+import type React from "react"
+import { marketplaceItems } from "@/lib/marketplace-data"
 import { AppHeader } from "@/components/app-header"
 import { BottomNav } from "@/components/bottom-nav"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, ChevronRight } from "lucide-react"
+import { Search, ChevronRight, X, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
+
+const categories = [
+  {
+    id: 1,
+    title: "Katzenfutter",
+    image: "/cat-food-bowls.jpg",
+    slug: "katzenfutter",
+  },
+  {
+    id: 2,
+    title: "Spielmäuse",
+    image: "/playful-cat.png",
+    slug: "spielmaeuse",
+  },
+  {
+    id: 3,
+    title: "Pflege & Hygiene",
+    image: "/cat-grooming.png",
+    slug: "pflege-hygiene",
+  },
+  {
+    id: 4,
+    title: "Interaktive Spielzeuge",
+    image: "/cat-interactive-toys.jpg",
+    slug: "interaktive-spielzeuge",
+  },
+  {
+    id: 5,
+    title: "Alle Spielzeuge",
+    image: "/cat-with-leash.jpg",
+    slug: "alle-spielzeuge",
+  },
+]
 
 export default function MarktplatzPage() {
-  const categories = [
-    {
-      id: 1,
-      title: "Katzenfutter",
-      image: "/cat-food-bowls.jpg",
-      slug: "katzenfutter",
-    },
-    {
-      id: 2,
-      title: "Spielmäuse",
-      image: "/playful-cat.png",
-      slug: "spielmaeuse",
-    },
-    {
-      id: 3,
-      title: "Pflege & Hygiene",
-      image: "/cat-grooming.png",
-      slug: "pflege-hygiene",
-    },
-    {
-      id: 4,
-      title: "Interaktive Spielzeuge",
-      image: "/cat-interactive-toys.jpg",
-      slug: "interaktive-spielzeuge",
-    },
-    {
-      id: 5,
-      title: "Alle Spielzeuge",
-      image: "/cat-with-leash.jpg",
-      slug: "alle-spielzeuge",
-    },
-  ]
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+
+  const filteredItems = marketplaceItems.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase()),
+  )
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      setIsSearching(true)
+    }
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchQuery(value)
+    if (!value.trim()) {
+      setIsSearching(false)
+    }
+  }
+
+  const clearSearch = () => {
+    setSearchQuery("")
+    setIsSearching(false)
+  }
+
+  const goBack = () => {
+    setIsSearching(false)
+    setSearchQuery("")
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -55,47 +94,118 @@ export default function MarktplatzPage() {
           </Link>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <Input placeholder="Suche e.g. Katzenklo, Spielzeug" className="pl-10 h-12 rounded-full" />
-        </div>
-
-        {/* Banner Ad */}
-        <Card className="mb-6 overflow-hidden bg-gradient-to-r from-teal-500 to-teal-600">
-          <div className="p-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <img src="/tabby-cat-sunbeam.png" alt="Cat" className="w-20 h-20 rounded-lg object-cover" />
-              <div className="text-white">
-                <div className="bg-white px-3 py-1 rounded inline-block mb-2">
-                  <span className="text-red-600 font-bold">PURINA</span>
-                  <span className="font-bold ml-1">ONE</span>
-                </div>
-                <p className="text-sm font-medium">Visible Health for Today and Tomorrow</p>
-              </div>
-            </div>
+        <form onSubmit={handleSearch} className="relative mb-6 flex items-center gap-2">
+          {isSearching && (
+            <Button type="button" variant="ghost" size="icon" onClick={goBack} className="flex-shrink-0">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          )}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              placeholder="Suche e.g. Katzenklo, Spielzeug"
+              className="pl-10 pr-10 h-12 rounded-full"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            {searchQuery && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={clearSearch}
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
           </div>
-        </Card>
+        </form>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {categories.map((category) => (
-            <Link key={category.id} href={`/marktplatz/${category.slug}`}>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                <div className="aspect-[3/2] overflow-hidden bg-muted">
-                  <img
-                    src={category.image || "/placeholder.svg"}
-                    alt={category.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-3">
-                  <h3 className="font-semibold text-sm">{category.title}</h3>
-                </div>
+        {isSearching && searchQuery ? (
+          <div>
+            <h2 className="text-lg font-semibold mb-4">
+              Suchergebnisse für "{searchQuery}" ({filteredItems.length})
+            </h2>
+
+            {filteredItems.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {filteredItems.map((item) => (
+                  <Link key={item.id} href={`/marktplatz/artikel/${item.id}`}>
+                    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                      <div className="flex gap-4 p-4">
+                        <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                          <img
+                            src={item.image || "/placeholder.svg"}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-base mb-1 line-clamp-2">{item.title}</h3>
+                          <p className="text-xs text-muted-foreground mb-2">{item.category}</p>
+                          <div className="flex items-center justify-between">
+                            <p className="text-lg font-bold text-primary">CHF {item.price}</p>
+                          </div>
+                          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                            <span>{item.seller}</span>
+                            <span>•</span>
+                            <span>{item.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">Keine Artikel gefunden für "{searchQuery}"</p>
+                <Button variant="link" onClick={() => setSearchQuery("")} className="mt-2">
+                  Suche zurücksetzen
+                </Button>
               </Card>
-            </Link>
-          ))}
-        </div>
+            )}
+          </div>
+        ) : (
+          <>
+            {/* Banner Ad */}
+            <Card className="mb-6 overflow-hidden bg-gradient-to-r from-teal-500 to-teal-600">
+              <div className="p-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <img src="/tabby-cat-sunbeam.png" alt="Cat" className="w-20 h-20 rounded-lg object-cover" />
+                  <div className="text-white">
+                    <div className="bg-white px-3 py-1 rounded inline-block mb-2">
+                      <span className="text-red-600 font-bold">PURINA</span>
+                      <span className="font-bold ml-1">ONE</span>
+                    </div>
+                    <p className="text-sm font-medium">Visible Health for Today and Tomorrow</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Categories Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {categories.map((category) => (
+                <Link key={category.id} href={`/marktplatz/${category.slug}`}>
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                    <div className="aspect-[3/2] overflow-hidden bg-muted">
+                      <img
+                        src={category.image || "/placeholder.svg"}
+                        alt={category.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-semibold text-sm">{category.title}</h3>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
       </main>
 
       <BottomNav />

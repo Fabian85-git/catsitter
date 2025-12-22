@@ -1,8 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ChevronLeft, Search, SlidersHorizontal, List, Map } from "lucide-react"
+import { ChevronLeft, List, Map } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
@@ -85,14 +84,7 @@ export default function ConnectPage() {
             Verbinde dich mit andern Katzenfreaks. Es muss nicht gleich für einen festen Termin sein.
           </p>
 
-          <div className="flex items-center gap-2 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input placeholder="Suche..." className="pl-10" />
-            </div>
-            <Button variant="ghost" size="icon" className="border rounded-lg">
-              <SlidersHorizontal className="w-5 h-5" />
-            </Button>
+          <div className="flex justify-end mb-4">
             <div className="flex border rounded-lg overflow-hidden">
               <Button
                 variant={viewMode === "list" ? "default" : "ghost"}

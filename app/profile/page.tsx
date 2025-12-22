@@ -6,62 +6,34 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { BottomNav } from "@/components/bottom-nav"
-import { useState, useEffect } from "react"
+import { useUserProfile } from "@/lib/hooks/use-user-profile"
+import { userProfileStore } from "@/lib/data-store"
 import Image from "next/image"
+import { useEffect } from "react"
 
 export default function ProfilePage() {
   const router = useRouter()
-  const [sittingType, setSittingType] = useState<"tausch" | "bezahlt">("tausch")
-  const [userData, setUserData] = useState({
-    nickname: "CatLover123",
-    firstName: "Anna",
-    lastName: "Müller",
-    email: "anna.mueller@example.com",
-    street: "Bahnhofstrasse 123",
-    zip: "8001",
-    city: "Zürich",
-    country: "Schweiz",
-    phone: "+41 79 123 45 67",
-    profileImage: null as string | null,
-  })
+  const { profile, updateProfile, clearProfile } = useUserProfile()
 
   useEffect(() => {
-    const savedType = localStorage.getItem("sittingType") as "tausch" | "bezahlt" | null
-    if (savedType) setSittingType(savedType)
-
-    const accountData = localStorage.getItem("onboarding_account")
-    const profileData = localStorage.getItem("onboarding_profile")
-
-    if (accountData) {
-      const account = JSON.parse(accountData)
-      setUserData((prev) => ({
-        ...prev,
-        nickname: account.nickname || prev.nickname,
-        firstName: account.firstName || prev.firstName,
-        lastName: account.lastName || prev.lastName,
-        email: account.email || prev.email,
-      }))
-    }
-
-    if (profileData) {
-      const profile = JSON.parse(profileData)
-      setUserData((prev) => ({
-        ...prev,
-        street: profile.street || prev.street,
-        zip: profile.zip || prev.zip,
-        city: profile.city || prev.city,
-        country: profile.country || prev.country,
-        phone: profile.phone || prev.phone,
-        profileImage: profile.profileImage || prev.profileImage,
-      }))
+    const currentProfile = userProfileStore.get()
+    if (!currentProfile || currentProfile.nickname !== "fabifabi") {
+      userProfileStore.resetToDefaults()
+      window.location.reload()
     }
   }, [])
 
   const handleLogout = () => {
-    // Clear any stored user data
-    localStorage.clear()
-    // Redirect to onboarding
+    clearProfile()
     router.push("/onboarding")
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background pb-20 flex items-center justify-center">
+        <p className="text-muted-foreground">Profil wird geladen...</p>
+      </div>
+    )
   }
 
   return (
@@ -80,9 +52,9 @@ export default function ProfilePage() {
         {/* Profile Picture and Name Section */}
         <div className="flex flex-col items-center gap-4 py-6">
           <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center overflow-hidden">
-            {userData.profileImage ? (
+            {profile.avatar ? (
               <Image
-                src={userData.profileImage || "/placeholder.svg"}
+                src={profile.avatar || "/placeholder.svg"}
                 alt="Profilbild"
                 width={96}
                 height={96}
@@ -94,7 +66,7 @@ export default function ProfilePage() {
           </div>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">Nickname</p>
-            <p className="text-xl font-bold">{userData.nickname}</p>
+            <p className="text-xl font-bold">{profile.nickname}</p>
           </div>
         </div>
 
@@ -106,26 +78,23 @@ export default function ProfilePage() {
             <div>
               <p className="text-sm text-muted-foreground">Name</p>
               <p className="font-medium">
-                {userData.firstName} {userData.lastName}
+                {profile.firstName} {profile.lastName}
               </p>
             </div>
 
             <div className="border-t pt-3">
               <p className="text-sm text-muted-foreground">Adresse</p>
-              <p className="font-medium">{userData.street}</p>
-              <p className="font-medium">
-                {userData.zip} {userData.city}
-              </p>
+              <p className="font-medium">{profile.address}</p>
             </div>
 
             <div className="border-t pt-3">
               <p className="text-sm text-muted-foreground">E-Mail</p>
-              <p className="font-medium">{userData.email}</p>
+              <p className="font-medium">{profile.email}</p>
             </div>
 
             <div className="border-t pt-3">
               <p className="text-sm text-muted-foreground">Telefon</p>
-              <p className="font-medium">{userData.phone || "Nicht angegeben"}</p>
+              <p className="font-medium">{profile.phone || "Nicht angegeben"}</p>
             </div>
           </div>
         </Card>
@@ -149,16 +118,6 @@ export default function ProfilePage() {
           <Link href="/profile/payment" className="block">
             <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
               <span className="font-medium">Zahlungsmittel</span>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-          </Link>
-
-          <Link href="/profile/sitting" className="block">
-            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
-              <span className="font-medium">
-                Sitten{" "}
-                <span className="text-muted-foreground">({sittingType === "tausch" ? "Tausch" : "Bezahlt"})</span>
-              </span>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>
           </Link>
