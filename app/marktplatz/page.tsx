@@ -195,24 +195,22 @@ export default function MarktplatzPage() {
             {/* Categories Grid */}
             <div className="grid grid-cols-2 gap-4">
               {categories.map((category) => (
-                <div
+                <Card
                   key={category.id}
                   onClick={() => router.push(`/marktplatz/${category.slug}`)}
-                  className="cursor-pointer"
+                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                 >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-[3/2] overflow-hidden bg-muted">
-                      <img
-                        src={category.image || "/placeholder.svg"}
-                        alt={category.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="p-3">
-                      <h3 className="font-semibold text-sm">{category.title}</h3>
-                    </div>
-                  </Card>
-                </div>
+                  <div className="aspect-[3/2] overflow-hidden bg-muted">
+                    <img
+                      src={category.image || "/placeholder.svg"}
+                      alt={category.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-sm">{category.title}</h3>
+                  </div>
+                </Card>
               ))}
             </div>
           </>

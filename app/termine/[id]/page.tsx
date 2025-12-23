@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, MessageCircle, Trash2 } from "lucide-react"
-import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -95,11 +94,9 @@ export default function AppointmentDetailPage() {
       {/* Header with back button */}
       <div className="sticky top-0 z-10 bg-background border-b">
         <div className="flex items-center justify-between px-4 py-4">
-          <Link href="/termine">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-          </Link>
+          <Button variant="ghost" size="icon" onClick={() => router.push("/termine")}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
           <h1 className="text-lg font-semibold">Termindetails</h1>
           <div className="w-10" />
         </div>
@@ -162,12 +159,10 @@ export default function AppointmentDetailPage() {
 
         <div className="space-y-3 pt-2 pb-6">
           {/* Contact Button - Primary color */}
-          <Link href={`/termine/${appointmentId}/contact`}>
-            <Button className="w-full gap-2" size="lg">
-              <MessageCircle className="w-5 h-5" />
-              Person kontaktieren
-            </Button>
-          </Link>
+          <Button className="w-full gap-2" size="lg" onClick={() => router.push(`/termine/${appointmentId}/contact`)}>
+            <MessageCircle className="w-5 h-5" />
+            Person kontaktieren
+          </Button>
 
           {/* Delete Button - Outline variant with destructive color */}
           <Button

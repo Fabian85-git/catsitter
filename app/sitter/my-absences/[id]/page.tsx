@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Clock, Trash2, Edit, MessageCircle, Star, X } from "lucide-react"
-import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
@@ -104,11 +103,9 @@ export default function AbsenceDetailPage({ params }: { params: { id: string } }
     <div className="min-h-screen bg-background pb-6">
       {/* Header with Back Button */}
       <div className="px-4 py-4 flex items-center justify-between">
-        <Link href="/sitter/my-absences">
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-        </Link>
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push("/sitter/my-absences")}>
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
         <div className="flex gap-2">
           {!isEditing ? (
             <>
@@ -247,20 +244,25 @@ export default function AbsenceDetailPage({ params }: { params: { id: string } }
           {!isEditing && (
             <>
               {hasSitter && (
-                <Link href={`/sitter/connect/${absence.sitterName?.toLowerCase()}/message`} className="block">
-                  <Button className="w-full h-12 text-base" size="lg">
-                    <MessageCircle className="w-5 h-5 mr-2" />
-                    {absence.sitterName} kontaktieren
-                  </Button>
-                </Link>
+                <Button
+                  className="w-full h-12 text-base"
+                  size="lg"
+                  onClick={() => router.push(`/sitter/connect/${absence.sitterName?.toLowerCase()}/message`)}
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  {absence.sitterName} kontaktieren
+                </Button>
               )}
 
               {!hasSitter && (
-                <Link href={`/sitter/my-absences/${absenceId}/available-sitters`} className="block">
-                  <Button variant="outline" className="w-full h-12 text-base bg-transparent" size="lg">
-                    Verfügbare Sitter anzeigen
-                  </Button>
-                </Link>
+                <Button
+                  variant="outline"
+                  className="w-full h-12 text-base bg-transparent"
+                  size="lg"
+                  onClick={() => router.push(`/sitter/my-absences/${absenceId}/available-sitters`)}
+                >
+                  Verfügbare Sitter anzeigen
+                </Button>
               )}
             </>
           )}
@@ -388,11 +390,13 @@ export default function AbsenceDetailPage({ params }: { params: { id: string } }
                 </div>
 
                 {/* Contact Button */}
-                <Link href={`/sitter/connect/${sitterProfile.name.toLowerCase()}/message`} className="block">
-                  <Button className="w-full text-lg" size="lg">
-                    Kontaktieren
-                  </Button>
-                </Link>
+                <Button
+                  className="w-full text-lg"
+                  size="lg"
+                  onClick={() => router.push(`/sitter/connect/${sitterProfile.name.toLowerCase()}/message`)}
+                >
+                  Kontaktieren
+                </Button>
               </div>
             </div>
           </div>

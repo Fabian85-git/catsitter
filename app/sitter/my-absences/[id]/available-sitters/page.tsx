@@ -2,15 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Star, MapPin, X } from "lucide-react"
-import Link from "next/link"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { sitterProfiles } from "@/lib/sitter-data"
+import { useRouter } from "next/navigation"
 
 export default function AvailableSittersPage({ params }: { params: { id: string } }) {
   const absenceId = params.id
   const [selectedSitter, setSelectedSitter] = useState<string | null>(null)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const router = useRouter()
 
   const availableSitters = [
     {
@@ -121,11 +122,14 @@ export default function AvailableSittersPage({ params }: { params: { id: string 
     <div className="min-h-screen bg-background pb-6">
       {/* Header with Back Button */}
       <div className="px-4 py-4">
-        <Link href={`/sitter/my-absences/${absenceId}`}>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-        </Link>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full"
+          onClick={() => router.push(`/sitter/my-absences/${absenceId}`)}
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
       </div>
 
       <main className="px-4 max-w-screen-xl mx-auto">
