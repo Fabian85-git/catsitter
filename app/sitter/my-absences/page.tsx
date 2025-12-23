@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useRouter } from "next/router" // Added useRouter for navigation
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Clock, Plus, ArrowRight, X } from "lucide-react"

@@ -20,10 +20,10 @@ export function AppHeader() {
   ]
 
   return (
-    <header className={`sticky top-0 z-40 bg-white border-b border-border ${!isHomePage ? "hidden md:block" : ""}`}>
-      <div className="flex items-center justify-between h-16 px-4 max-w-screen-xl mx-auto">
+    <header className={`sticky top-0 z-40 bg-white border-b border-white ${!isHomePage ? "hidden md:block" : ""}`}>
+      <div className="flex items-center justify-between h-16 px-4 max-w-screen-xl mx-auto leading-7 gap-0 flex-row my-0.5 py-0">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/miauzly-logo-color.png" alt="Miouzly Logo" width={200} height={50} className="h-10 w-auto" />
+          <Image src="/miauzly-logo-color.png" alt="Miouzly Logo" width={200} height={50} className="w-auto my-0 h-12" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -49,7 +49,7 @@ export function AppHeader() {
 
         <Link href="/profile">
           <Button variant="ghost" size="icon">
-            <User className="w-7 h-7" />
+            <User className="size-6" />
           </Button>
         </Link>
       </div>
