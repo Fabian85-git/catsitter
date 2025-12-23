@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 import type React from "react"
 import { marketplaceItems } from "@/lib/marketplace-data"
 import { AppHeader } from "@/components/app-header"
@@ -8,7 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, ChevronRight, X, ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 const categories = [
@@ -45,6 +47,7 @@ const categories = [
 ]
 
 export default function MarktplatzPage() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
 
@@ -131,8 +134,12 @@ export default function MarktplatzPage() {
             {filteredItems.length > 0 ? (
               <div className="grid grid-cols-1 gap-4">
                 {filteredItems.map((item) => (
-                  <Link key={item.id} href={`/marktplatz/artikel/${item.id}`}>
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                  <div
+                    key={item.id}
+                    onClick={() => router.push(`/marktplatz/artikel/${item.id}`)}
+                    className="cursor-pointer"
+                  >
+                    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="flex gap-4 p-4">
                         <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                           <img
@@ -155,7 +162,7 @@ export default function MarktplatzPage() {
                         </div>
                       </div>
                     </Card>
-                  </Link>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -188,8 +195,12 @@ export default function MarktplatzPage() {
             {/* Categories Grid */}
             <div className="grid grid-cols-2 gap-4">
               {categories.map((category) => (
-                <Link key={category.id} href={`/marktplatz/${category.slug}`}>
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                <div
+                  key={category.id}
+                  onClick={() => router.push(`/marktplatz/${category.slug}`)}
+                  className="cursor-pointer"
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="aspect-[3/2] overflow-hidden bg-muted">
                       <img
                         src={category.image || "/placeholder.svg"}
@@ -201,7 +212,7 @@ export default function MarktplatzPage() {
                       <h3 className="font-semibold text-sm">{category.title}</h3>
                     </div>
                   </Card>
-                </Link>
+                </div>
               ))}
             </div>
           </>

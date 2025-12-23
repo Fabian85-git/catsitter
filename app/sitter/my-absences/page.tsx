@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useRouter } from "next/router" // Added useRouter for navigation
 
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Clock, Plus, ArrowRight, X } from "lucide-react"
@@ -30,6 +31,7 @@ const DEMO_ABSENCE = {
 }
 
 export default function MyAbsencesPage() {
+  const router = useRouter() // Added useRouter for navigation
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { absences, addAbsence } = useAbsences()
 
@@ -85,7 +87,7 @@ export default function MyAbsencesPage() {
       </div>
 
       <main className="px-4 pb-6 max-w-screen-xl mx-auto">
-        <h1 className="text-xl font-bold mb-6 text-balance">Ich suche Sitter am...</h1>
+        <h1 className="text-xl font-bold mb-3 text-balance">Ich suche Sitter am...</h1>
 
         <Button
           variant="default"
@@ -95,6 +97,8 @@ export default function MyAbsencesPage() {
           Abwesenheit erfassen
           <Plus className="w-5 h-5 ml-2" />
         </Button>
+
+        <div className="border-t border-gray-200 mb-6" />
 
         <h2 className="text-2xl font-bold mb-4">Meine Abwesenheiten</h2>
 
@@ -134,24 +138,26 @@ export default function MyAbsencesPage() {
                   <span>{absence.frequency}</span>
                 </div>
 
-                <p className="text-foreground">{absence.notes}</p>
-
                 {absence.status !== "assigned" && (
-                  <Link href={`/sitter/my-absences/${absence.id}/available-sitters`}>
-                    <Button variant="outline" className="w-full max-w-md h-12 justify-between bg-transparent">
-                      Verfügbare Sitter anzeigen
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    className="w-full max-w-md h-12 justify-between bg-transparent"
+                    onClick={() => router.push(`/sitter/my-absences/${absence.id}/available-sitters`)}
+                  >
+                    Verfügbare Sitter anzeigen
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
                 )}
 
                 <div className="flex justify-end">
-                  <Link href={`/sitter/my-absences/${absence.id}`}>
-                    <Button variant="ghost" className="flex items-center gap-2 h-auto px-2">
-                      <span className="text-sm">Details</span>
-                      <ArrowRight className="w-5 h-5" />
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="ghost"
+                    className="flex items-center gap-2 h-auto px-2"
+                    onClick={() => router.push(`/sitter/my-absences/${absence.id}`)}
+                  >
+                    <span className="text-sm">Details</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </Button>
                 </div>
               </div>
 

@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, ChevronRight, List, Map, SlidersHorizontal } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { findCatsOwners } from "@/lib/find-cats-data"
 
 export default function FindCatsPage() {
   const [viewMode, setViewMode] = useState<"list" | "map">("list")
+  const router = useRouter()
 
   return (
     <div className="min-h-screen bg-background pb-6">
@@ -58,31 +60,33 @@ export default function FindCatsPage() {
         {viewMode === "list" ? (
           <div className="divide-y">
             {findCatsOwners.map((request) => (
-              <Link href={`/sitter/find-cats/${request.id}`} key={request.id} className="block">
-                <div className="py-4 flex items-center gap-4">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-muted">
-                    <Image src={request.image || "/placeholder.svg"} alt={request.name} fill className="object-cover" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <h3 className="text-xl font-semibold">{request.name}</h3>
-                      <span className="bg-[#5682D3] text-white px-3 py-1 rounded-full text-xs font-medium flex-shrink-0">
-                        {request.status}
-                      </span>
-                    </div>
-
-                    <p className="text-sm text-foreground mb-1">{request.cats}</p>
-                    <p className="text-sm text-muted-foreground mb-1">{request.distance}</p>
-                    <div className="flex items-center gap-1.5 text-sm text-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span>Datum: {request.dates}</span>
-                    </div>
-                  </div>
-
-                  <ChevronRight className="w-6 h-6 text-muted-foreground flex-shrink-0" />
+              <div
+                key={request.id}
+                className="py-4 flex items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors -mx-4 px-4"
+                onClick={() => router.push(`/sitter/find-cats/${request.id}`)}
+              >
+                <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-muted">
+                  <Image src={request.image || "/placeholder.svg"} alt={request.name} fill className="object-cover" />
                 </div>
-              </Link>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <h3 className="text-xl font-semibold">{request.name}</h3>
+                    <span className="bg-[#5682D3] text-white px-3 py-1 rounded-full text-xs font-medium flex-shrink-0">
+                      {request.status}
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-foreground mb-1">{request.cats}</p>
+                  <p className="text-sm text-muted-foreground mb-1">{request.distance}</p>
+                  <div className="flex items-center gap-1.5 text-sm text-foreground">
+                    <Calendar className="w-4 h-4" />
+                    <span>Datum: {request.dates}</span>
+                  </div>
+                </div>
+
+                <ChevronRight className="w-6 h-6 text-muted-foreground flex-shrink-0" />
+              </div>
             ))}
           </div>
         ) : (
@@ -100,23 +104,23 @@ export default function FindCatsPage() {
             {/* Overlay markers for each sitter request */}
             <div className="absolute inset-0 pointer-events-none">
               {findCatsOwners.map((request, index) => (
-                <Link key={request.id} href={`/sitter/find-cats/${request.id}`} className="pointer-events-auto">
-                  <div
-                    className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-                    style={{
-                      left: `${50 + (index - 2.5) * 8}%`,
-                      top: `${45 + (index % 2) * 10}%`,
-                    }}
-                  >
-                    <div className="text-4xl hover:scale-110 transition-transform">🐱</div>
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-background border rounded-lg px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                      <p className="font-semibold text-sm">{request.name}</p>
-                      <p className="text-xs text-muted-foreground">{request.distance}</p>
-                      <p className="text-xs">{request.cats}</p>
-                      <p className="text-xs text-muted-foreground">{request.dates}</p>
-                    </div>
+                <div
+                  key={request.id}
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group pointer-events-auto"
+                  style={{
+                    left: `${50 + (index - 2.5) * 8}%`,
+                    top: `${45 + (index % 2) * 10}%`,
+                  }}
+                  onClick={() => router.push(`/sitter/find-cats/${request.id}`)}
+                >
+                  <div className="text-4xl hover:scale-110 transition-transform">🐱</div>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-background border rounded-lg px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    <p className="font-semibold text-sm">{request.name}</p>
+                    <p className="text-xs text-muted-foreground">{request.distance}</p>
+                    <p className="text-xs">{request.cats}</p>
+                    <p className="text-xs text-muted-foreground">{request.dates}</p>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>

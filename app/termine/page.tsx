@@ -6,9 +6,10 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, List, CalendarIcon, ChevronLeft } from "lucide-react"
 import { useState } from "react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function TerminePage() {
+  const router = useRouter()
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list")
   const [selectedDate, setSelectedDate] = useState(13)
   const [currentMonth, setCurrentMonth] = useState("November 2025")
@@ -259,13 +260,14 @@ export default function TerminePage() {
             {appointments.map((appointment) => (
               <Card
                 key={appointment.id}
-                className={`p-2 border-l-8 shadow-xs ${
+                className={`p-2 border-l-8 shadow-xs cursor-pointer hover:shadow-md transition-shadow ${
                   appointment.color === "blue"
                     ? "border-l-[#5682D3]"
                     : appointment.color === "pink"
                       ? "border-l-pink-500"
                       : "border-l-orange-500"
                 }`}
+                onClick={() => router.push(`/termine/${appointment.id}`)}
               >
                 <div className="flex items-start justify-between mb-1">
                   <div>
@@ -311,12 +313,10 @@ export default function TerminePage() {
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <Link href={`/termine/${appointment.id}`}>
-                    <Button variant="ghost" size="sm" className="gap-1 h-8">
-                      Details
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
-                  </Link>
+                  <Button variant="ghost" size="sm" className="gap-1 h-8">
+                    Details
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
                 </div>
               </Card>
             ))}
@@ -386,7 +386,11 @@ export default function TerminePage() {
               {selectedAppointments.length > 0 ? (
                 <div className="space-y-4">
                   {selectedAppointments.map((appointment) => (
-                    <Card key={appointment.id} className="p-4 bg-muted">
+                    <Card
+                      key={appointment.id}
+                      className="p-4 bg-muted cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => router.push(`/termine/${appointment.id}`)}
+                    >
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <p className="font-semibold text-lg">{appointment.date}</p>
@@ -401,12 +405,10 @@ export default function TerminePage() {
                         <p className="text-sm mb-3">Buchungsanfrage bei {appointment.person}</p>
                       )}
                       <div className="flex justify-end">
-                        <Link href={`/termine/${appointment.id}`}>
-                          <Button variant="ghost" size="sm" className="gap-1 h-8">
-                            Details
-                            <ChevronRight className="w-4 h-4" />
-                          </Button>
-                        </Link>
+                        <Button variant="ghost" size="sm" className="gap-1 h-8">
+                          Details
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
                       </div>
                     </Card>
                   ))}

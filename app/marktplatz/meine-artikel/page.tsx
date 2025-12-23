@@ -1,16 +1,58 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Plus, ChevronRight } from "lucide-react"
-import Link from "next/link"
+import { ArrowLeft, Plus } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 export default function MeineArtikelPage() {
-  const myListings = [
+  const router = useRouter()
+  const [showNewItemDialog, setShowNewItemDialog] = useState(false)
+  const [newItem, setNewItem] = useState({
+    title: "",
+    price: "",
+    category: "",
+    description: "",
+  })
+
+  const soldListings = [
+    {
+      id: 101,
+      title: "Katzenbett rund",
+      price: 35,
+      image: "/cat-bed.jpg",
+      category: "Katzenbetten",
+      soldDate: "vor 5 Tagen",
+    },
+    {
+      id: 102,
+      title: "Futternapf Set",
+      price: 15,
+      image: "/cat-food-bowls.jpg",
+      category: "Näpfe",
+      soldDate: "vor 2 Wochen",
+    },
+  ]
+
+  const [myListings, setMyListings] = useState([
     {
       id: 1,
       title: "Kratzbaum wie neu",
       price: 85,
-      image: "/cat-scratching-post.png",
+      image: "/cat-with-leash.jpg",
       category: "Kratzbäume",
       status: "active",
       views: 24,
@@ -20,7 +62,7 @@ export default function MeineArtikelPage() {
       id: 2,
       title: "Interaktives Spielzeug Set",
       price: 25,
-      image: "/cat-toys-set.jpg",
+      image: "/cat-interactive-toys.jpg",
       category: "Spielzeuge",
       status: "active",
       views: 12,
@@ -30,51 +72,77 @@ export default function MeineArtikelPage() {
       id: 3,
       title: "Transportbox mittelgross",
       price: 45,
-      image: "/cat-carrier-box.jpg",
+      image: "/playful-cat.png",
       category: "Transportboxen",
       status: "active",
       views: 8,
       createdAt: "vor 2 Wochen",
     },
-  ]
+  ])
+
+  const handleCreateItem = () => {
+    if (newItem.title && newItem.price && newItem.category) {
+      const newListing = {
+        id: Date.now(),
+        title: newItem.title,
+        price: Number.parseFloat(newItem.price),
+        image: "/placeholder.svg?height=100&width=100",
+        category: newItem.category,
+        status: "active" as const,
+        views: 0,
+        createdAt: "Gerade eben",
+      }
+      setMyListings([newListing, ...myListings])
+      setNewItem({ title: "", price: "", category: "", description: "" })
+      setShowNewItemDialog(false)
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-6">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background border-b">
         <div className="flex items-center gap-4 px-4 py-4 max-w-screen-xl mx-auto">
-          <Link href="/marktplatz">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-          </Link>
+          <Button variant="ghost" size="icon" onClick={() => router.push("/marktplatz")}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
           <h1 className="text-xl font-bold">Meine Artikel</h1>
         </div>
       </header>
 
       <main className="px-4 py-6 max-w-2xl mx-auto">
-        {/* Add New Item Button */}
-        <Link href="/marktplatz/verkaufen">
-          <Button className="w-full h-12 mb-6 gap-2">
-            <Plus className="w-5 h-5" />
-            Neuer Artikel erfassen
-          </Button>
-        </Link>
+        <Button className="w-full h-12 mb-3 gap-2" onClick={() => setShowNewItemDialog(true)}>
+          <Plus className="w-5 h-5" />
+          Neuer Artikel erfassen
+        </Button>
 
-        {/* Link to Sold Items */}
-        <Link href="/marktplatz/verkauft">
-          <Card className="p-4 mb-6 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <span className="text-green-600 font-semibold">✓</span>
-                </div>
-                <span className="font-medium">Bereits verkaufte Artikel</span>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+        {soldListings.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-muted-foreground mb-3">Bereits verkaufte Artikel</h3>
+            <div className="space-y-2">
+              {soldListings.map((listing) => (
+                <Card key={listing.id} className="overflow-hidden opacity-60">
+                  <div className="flex gap-3 p-3">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <img
+                        src={listing.image || "/placeholder.svg"}
+                        alt={listing.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-sm line-clamp-1">{listing.title}</h3>
+                      <p className="text-sm font-semibold text-primary">CHF {listing.price}</p>
+                      <p className="text-xs text-muted-foreground">Verkauft {listing.soldDate}</p>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
-          </Card>
-        </Link>
+          </div>
+        )}
+
+        <div className="border-t my-6" />
 
         {/* Active Listings */}
         <div className="space-y-4">
@@ -124,6 +192,61 @@ export default function MeineArtikelPage() {
           ))}
         </div>
       </main>
+
+      <Dialog open={showNewItemDialog} onOpenChange={setShowNewItemDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Neuer Artikel erfassen</DialogTitle>
+            <DialogDescription>Erstelle ein neues Inserat für den Marktplatz</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Titel</Label>
+              <Input
+                id="title"
+                placeholder="z.B. Kratzbaum wie neu"
+                value={newItem.title}
+                onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="price">Preis (CHF)</Label>
+              <Input
+                id="price"
+                type="number"
+                placeholder="25.00"
+                value={newItem.price}
+                onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">Kategorie</Label>
+              <Input
+                id="category"
+                placeholder="z.B. Spielzeuge"
+                value={newItem.category}
+                onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Beschreibung</Label>
+              <Textarea
+                id="description"
+                placeholder="Beschreibe deinen Artikel..."
+                rows={4}
+                value={newItem.description}
+                onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNewItemDialog(false)}>
+              Abbrechen
+            </Button>
+            <Button onClick={handleCreateItem}>Artikel erstellen</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

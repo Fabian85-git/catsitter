@@ -6,7 +6,6 @@ import { BottomNav } from "@/components/bottom-nav"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, MapPin, User } from "lucide-react"
-import Link from "next/link"
 import { marketplaceItems, categoryMap } from "@/lib/marketplace-data"
 
 export default function CategoryPage() {
@@ -32,8 +31,12 @@ export default function CategoryPage() {
         {filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {filteredItems.map((item) => (
-              <Link key={item.id} href={`/marktplatz/artikel/${item.id}`}>
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+              <div
+                key={item.id}
+                onClick={() => router.push(`/marktplatz/artikel/${item.id}`)}
+                className="cursor-pointer"
+              >
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="flex gap-4 p-4">
                     <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                       <img
@@ -57,7 +60,7 @@ export default function CategoryPage() {
                     </div>
                   </div>
                 </Card>
-              </Link>
+              </div>
             ))}
           </div>
         ) : (

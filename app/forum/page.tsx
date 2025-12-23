@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useRouter } from "next/navigation" // Added useRouter for navigation
 
 import { AppHeader } from "@/components/app-header"
 import { BottomNav } from "@/components/bottom-nav"
@@ -9,9 +10,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, ChevronRight, Flame, Sparkles, Send, ArrowLeft, X } from "lucide-react"
 import { useState } from "react"
-import Link from "next/link"
 
 export default function ForumPage() {
+  const router = useRouter() // Added useRouter for navigation
   const [activeTab, setActiveTab] = useState<"posts" | "ai">("posts")
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null)
@@ -213,8 +214,8 @@ export default function ForumPage() {
               <div className="space-y-3">
                 {filteredPosts.length > 0 ? (
                   filteredPosts.map((post) => (
-                    <Link key={post.id} href={`/forum/${post.id}`}>
-                      <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <div key={post.id} onClick={() => router.push(`/forum/${post.id}`)} className="cursor-pointer">
+                      <Card className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <h3 className="font-semibold text-lg mb-1">{post.title}</h3>
@@ -224,7 +225,7 @@ export default function ForumPage() {
                                 <span
                                   key={idx}
                                   onClick={(e) => {
-                                    e.preventDefault()
+                                    e.stopPropagation() // Prevent navigation when clicking tag
                                     handleTopicClick(tag)
                                   }}
                                   className="text-xs bg-secondary px-2 py-1 rounded-full hover:bg-secondary/80 transition-colors"
@@ -240,7 +241,7 @@ export default function ForumPage() {
                           <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-1" />
                         </div>
                       </Card>
-                    </Link>
+                    </div>
                   ))
                 ) : (
                   <Card className="p-8 text-center">
@@ -251,8 +252,8 @@ export default function ForumPage() {
             </section>
           </>
         ) : (
-          <Link href="/forum/ai-berater" className="block">
-            <Card className="p-8 text-center hover:shadow-lg transition-shadow cursor-pointer">
+          <div onClick={() => router.push("/forum/ai-berater")} className="cursor-pointer">
+            <Card className="p-8 text-center hover:shadow-lg transition-shadow">
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center">
                 <Sparkles className="w-10 h-10 text-white" />
               </div>
@@ -266,7 +267,7 @@ export default function ForumPage() {
                 <Send className="w-4 h-4 ml-2" />
               </Button>
             </Card>
-          </Link>
+          </div>
         )}
       </main>
 
