@@ -36,7 +36,10 @@ export function AppHeader() {
   ]
 
   return (
-    <header className={`sticky top-0 z-40 bg-white border-b border-white ${!isHomePage ? "hidden md:block" : ""}`}>
+    <header
+      className={`sticky top-0 z-40 bg-white border-b border-white ${!isHomePage ? "hidden md:block" : ""}`}
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       <div className="flex items-center justify-between h-16 px-4 max-w-screen-xl mx-auto leading-7 gap-0 flex-row py-0 my-2">
         <Link href="/" className="flex items-center gap-2">
           <Image

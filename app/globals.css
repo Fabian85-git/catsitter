@@ -139,5 +139,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Adding safe area padding for iOS */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
