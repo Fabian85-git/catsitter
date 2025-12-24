@@ -9,16 +9,21 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Check } from "lucide-react"
+
+type ServiceType = "tausch" | "bezahlen"
 
 export default function OnboardingBoth() {
   const router = useRouter()
+  const [serviceType, setServiceType] = useState<ServiceType>("tausch")
   const [sitterData, setSitterData] = useState({
     services: {
       feeding: false,
       overnight: false,
       medical: false,
     },
-    pricePerDay: "",
+    priceOneVisit: "",
+    priceTwoVisits: "",
   })
   const [ownerData, setOwnerData] = useState({
     numberOfCats: "",
@@ -27,7 +32,15 @@ export default function OnboardingBoth() {
   })
 
   const handleContinue = () => {
-    localStorage.setItem("onboarding_both", JSON.stringify({ sitterData, ownerData }))
+    localStorage.setItem("onboarding_both", JSON.stringify({ sitterData: { ...sitterData, serviceType }, ownerData }))
+    localStorage.setItem(
+      "miauzly_service_settings",
+      JSON.stringify({
+        type: serviceType,
+        priceOneVisit: sitterData.priceOneVisit,
+        priceTwoVisits: sitterData.priceTwoVisits,
+      }),
+    )
     router.push("/onboarding/done")
   }
 
@@ -48,6 +61,43 @@ export default function OnboardingBoth() {
 
           <TabsContent value="sitter" className="space-y-4 mt-4">
             <div className="space-y-6">
+              <div className="space-y-4">
+                <Label className="text-base font-semibold">Wie möchtest du die App nutzen?</Label>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => setServiceType("tausch")}
+                    className={`w-full p-4 border-2 rounded-lg transition-all ${
+                      serviceType === "tausch" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-left flex-1">
+                        <p className="font-semibold">Tausch</p>
+                        <p className="text-sm text-muted-foreground">Gegenseitige Katzenbetreuung ohne Bezahlung</p>
+                      </div>
+                      {serviceType === "tausch" && <Check className="w-6 h-6 text-primary flex-shrink-0" />}
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setServiceType("bezahlen")}
+                    className={`w-full p-4 border-2 rounded-lg transition-all ${
+                      serviceType === "bezahlen"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-left flex-1">
+                        <p className="font-semibold">Bezahlen</p>
+                        <p className="text-sm text-muted-foreground">Ich biete bezahlte Katzenbetreuung an</p>
+                      </div>
+                      {serviceType === "bezahlen" && <Check className="w-6 h-6 text-primary flex-shrink-0" />}
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <Label className="text-base font-semibold">Biete an:</Label>
 
@@ -102,16 +152,41 @@ export default function OnboardingBoth() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="price">Preis pro Tag (CHF)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  placeholder="25"
-                  value={sitterData.pricePerDay}
-                  onChange={(e) => setSitterData({ ...sitterData, pricePerDay: e.target.value })}
-                />
-              </div>
+              {serviceType === "bezahlen" && (
+                <div className="space-y-4 pt-4 border-t">
+                  <Label className="text-base font-semibold">Deine Preise</Label>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="priceOneVisit">Preis für 1 Besuch pro Tag</Label>
+                    <div className="relative">
+                      <Input
+                        id="priceOneVisit"
+                        type="number"
+                        placeholder="0.00"
+                        value={sitterData.priceOneVisit}
+                        onChange={(e) => setSitterData({ ...sitterData, priceOneVisit: e.target.value })}
+                        className="pr-12"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">CHF</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="priceTwoVisits">Preis für 2 Besuche pro Tag</Label>
+                    <div className="relative">
+                      <Input
+                        id="priceTwoVisits"
+                        type="number"
+                        placeholder="0.00"
+                        value={sitterData.priceTwoVisits}
+                        onChange={(e) => setSitterData({ ...sitterData, priceTwoVisits: e.target.value })}
+                        className="pr-12"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">CHF</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </TabsContent>
 

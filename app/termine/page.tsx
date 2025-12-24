@@ -2,7 +2,6 @@
 
 import { AppHeader } from "@/components/app-header"
 import { BottomNav } from "@/components/bottom-nav"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, List, CalendarIcon, ChevronLeft } from "lucide-react"
 import { useState } from "react"
@@ -12,7 +11,82 @@ export default function TerminePage() {
   const router = useRouter()
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list")
   const [selectedDate, setSelectedDate] = useState(13)
-  const [currentMonth, setCurrentMonth] = useState("November 2025")
+  const [currentYear, setCurrentYear] = useState(2025)
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(10) // 10 = November (0-indexed)
+
+  const monthNames = [
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+  ]
+
+  const currentMonth = `${monthNames[currentMonthIndex]} ${currentYear}`
+
+  const goToPreviousMonth = () => {
+    if (currentMonthIndex === 0) {
+      setCurrentMonthIndex(11)
+      setCurrentYear(currentYear - 1)
+    } else {
+      setCurrentMonthIndex(currentMonthIndex - 1)
+    }
+  }
+
+  const goToNextMonth = () => {
+    if (currentMonthIndex === 11) {
+      setCurrentMonthIndex(0)
+      setCurrentYear(currentYear + 1)
+    } else {
+      setCurrentMonthIndex(currentMonthIndex + 1)
+    }
+  }
+
+  const getAppointmentsForDay = (day: number) => {
+    return appointments.filter((apt) => apt.day === day && apt.month === currentMonthIndex + 1)
+  }
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate()
+  }
+
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay()
+  }
+
+  const generateCalendarDays = () => {
+    const daysInMonth = getDaysInMonth(currentMonthIndex, currentYear)
+    const firstDay = getFirstDayOfMonth(currentMonthIndex, currentYear)
+    const days = []
+
+    // Add previous month's trailing days
+    const prevMonthDays = getDaysInMonth(currentMonthIndex - 1, currentYear)
+    for (let i = firstDay - 1; i >= 0; i--) {
+      days.push({ day: prevMonthDays - i, isCurrentMonth: false })
+    }
+
+    // Add current month's days
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push({ day: i, isCurrentMonth: true })
+    }
+
+    // Add next month's leading days to fill the grid
+    const remainingDays = 35 - days.length
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({ day: i, isCurrentMonth: false })
+    }
+
+    return days
+  }
+
+  const calendarDays = generateCalendarDays()
 
   const getAppointments = () => {
     if (typeof window === "undefined") return []
@@ -184,48 +258,6 @@ export default function TerminePage() {
 
   const appointments = getAppointments()
 
-  const getAppointmentsForDay = (day: number) => {
-    return appointments.filter((apt) => apt.day === day && apt.month === 11)
-  }
-
-  const calendarDays = [
-    { day: 27, isCurrentMonth: false },
-    { day: 28, isCurrentMonth: false },
-    { day: 29, isCurrentMonth: false },
-    { day: 30, isCurrentMonth: false },
-    { day: 1, isCurrentMonth: true },
-    { day: 2, isCurrentMonth: true },
-    { day: 3, isCurrentMonth: true },
-    { day: 4, isCurrentMonth: true },
-    { day: 5, isCurrentMonth: true },
-    { day: 6, isCurrentMonth: true },
-    { day: 7, isCurrentMonth: true },
-    { day: 8, isCurrentMonth: true },
-    { day: 9, isCurrentMonth: true },
-    { day: 10, isCurrentMonth: true },
-    { day: 11, isCurrentMonth: true },
-    { day: 12, isCurrentMonth: true },
-    { day: 13, isCurrentMonth: true },
-    { day: 14, isCurrentMonth: true },
-    { day: 15, isCurrentMonth: true },
-    { day: 16, isCurrentMonth: true },
-    { day: 17, isCurrentMonth: true },
-    { day: 18, isCurrentMonth: true },
-    { day: 19, isCurrentMonth: true },
-    { day: 20, isCurrentMonth: true },
-    { day: 21, isCurrentMonth: true },
-    { day: 22, isCurrentMonth: true },
-    { day: 23, isCurrentMonth: true },
-    { day: 24, isCurrentMonth: true },
-    { day: 25, isCurrentMonth: true },
-    { day: 26, isCurrentMonth: true },
-    { day: 27, isCurrentMonth: true },
-    { day: 28, isCurrentMonth: true },
-    { day: 29, isCurrentMonth: true },
-    { day: 30, isCurrentMonth: true },
-    { day: 31, isCurrentMonth: true },
-  ]
-
   const selectedAppointments = getAppointmentsForDay(selectedDate)
 
   return (
@@ -256,89 +288,78 @@ export default function TerminePage() {
         </div>
 
         {viewMode === "list" ? (
-          <div className="space-y-4">
+          <div className="divide-y">
             {appointments.map((appointment) => (
-              <Card
+              <div
                 key={appointment.id}
-                className={`p-2 border-l-8 shadow-xs cursor-pointer hover:shadow-md transition-shadow ${
-                  appointment.color === "blue"
-                    ? "border-l-[#5682D3]"
-                    : appointment.color === "pink"
-                      ? "border-l-pink-500"
-                      : "border-l-orange-500"
-                }`}
+                className="py-4 flex items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors -mx-4 px-4"
                 onClick={() => router.push(`/termine/${appointment.id}`)}
               >
-                <div className="flex items-start justify-between mb-1">
-                  <div>
-                    <p className="font-semibold text-lg">{appointment.date}</p>
-                    {appointment.status === "pending" && (
-                      <p className="text-xs text-orange-600 font-medium mt-1">⏳ Noch nicht bestätigter Termin</p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium whitespace-pre-line">{appointment.time}</p>
-                  </div>
+                <div className="w-16 h-16 rounded-full bg-muted overflow-hidden flex-shrink-0">
+                  <img
+                    src={appointment.image || "/placeholder.svg"}
+                    alt={appointment.person}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div className="flex items-center gap-3 mb-1">
-                  <div className="w-12 h-12 rounded-full bg-muted overflow-hidden flex-shrink-0">
-                    <img
-                      src={appointment.image || "/placeholder.svg"}
-                      alt={appointment.person}
-                      className="w-full h-full object-cover"
-                    />
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <p className="text-lg font-semibold">{appointment.date}</p>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
+                        appointment.color === "blue"
+                          ? "bg-blue-100 text-blue-700"
+                          : appointment.color === "pink"
+                            ? "bg-pink-100 text-pink-700"
+                            : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
+                      {appointment.type === "sitting"
+                        ? "Sitting"
+                        : appointment.type === "being-sat"
+                          ? "Wird gesittet"
+                          : "Anfrage"}
+                    </span>
                   </div>
-                  <div className="flex-1">
-                    {appointment.type === "sitting" ? (
-                      <>
-                        <p className="text-sm text-muted-foreground">
-                          Sitting bei <span className="font-semibold text-foreground">{appointment.person}</span>
-                        </p>
-                        <p className="text-sm">{appointment.cats}</p>
-                        {appointment.note && (
-                          <p className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">{appointment.note}</p>
-                        )}
-                      </>
-                    ) : appointment.type === "being-sat" ? (
-                      <p className="font-semibold text-foreground">{appointment.person}</p>
-                    ) : (
-                      <>
-                        <p className="text-sm text-muted-foreground">
-                          Buchungsanfrage bei{" "}
-                          <span className="font-semibold text-foreground">{appointment.person}</span>
-                        </p>
-                        <p className="text-sm">{appointment.cats}</p>
-                      </>
-                    )}
-                  </div>
+                  <p className="text-sm text-muted-foreground mb-1">{appointment.time}</p>
+                  {appointment.type === "sitting" ? (
+                    <p className="text-sm text-foreground">
+                      bei <span className="font-medium">{appointment.person}</span> • {appointment.cats}
+                    </p>
+                  ) : appointment.type === "being-sat" ? (
+                    <p className="text-sm text-foreground">
+                      <span className="font-medium">{appointment.person}</span> sittet deine Katze
+                    </p>
+                  ) : (
+                    <p className="text-sm text-foreground">
+                      Buchungsanfrage bei <span className="font-medium">{appointment.person}</span>
+                    </p>
+                  )}
+                  {appointment.status === "pending" && (
+                    <p className="text-xs text-orange-600 font-medium mt-1">⏳ Noch nicht bestätigt</p>
+                  )}
                 </div>
-                <div className="flex justify-end">
-                  <Button variant="ghost" size="sm" className="gap-1 h-8">
-                    Details
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </Card>
+
+                <ChevronRight className="w-6 h-6 text-muted-foreground flex-shrink-0" />
+              </div>
             ))}
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Calendar header with month navigation */}
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">{currentMonth}</h2>
               <div className="flex gap-2">
-                <Button variant="ghost" size="icon" className="rounded-full bg-muted">
+                <Button variant="ghost" size="icon" className="rounded-full bg-muted" onClick={goToPreviousMonth}>
                   <ChevronLeft className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="rounded-full bg-muted">
+                <Button variant="ghost" size="icon" className="rounded-full bg-muted" onClick={goToNextMonth}>
                   <ChevronRight className="w-5 h-5" />
                 </Button>
               </div>
             </div>
 
-            {/* Calendar grid */}
             <div className="bg-background rounded-lg">
-              {/* Day headers */}
               <div className="grid grid-cols-7 gap-2 mb-4">
                 {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
                   <div key={i} className="text-center text-sm font-medium text-muted-foreground py-2">
@@ -347,7 +368,6 @@ export default function TerminePage() {
                 ))}
               </div>
 
-              {/* Calendar days */}
               <div className="grid grid-cols-7 gap-2">
                 {calendarDays.map((dayObj, i) => {
                   const dayAppointments = dayObj.isCurrentMonth ? getAppointmentsForDay(dayObj.day) : []
@@ -380,37 +400,64 @@ export default function TerminePage() {
               </div>
             </div>
 
-            {/* Upcoming appointments for selected date */}
             <div className="border-t pt-6">
               <h3 className="text-xl font-semibold mb-4">Nächste Termine</h3>
               {selectedAppointments.length > 0 ? (
-                <div className="space-y-4">
+                <div className="divide-y">
                   {selectedAppointments.map((appointment) => (
-                    <Card
+                    <div
                       key={appointment.id}
-                      className="p-4 bg-muted cursor-pointer hover:shadow-md transition-shadow"
+                      className="py-4 flex items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors -mx-4 px-4"
                       onClick={() => router.push(`/termine/${appointment.id}`)}
                     >
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <p className="font-semibold text-lg">{appointment.date}</p>
-                          {appointment.status === "pending" && (
-                            <p className="text-xs text-orange-600 font-medium mt-1">⏳ Noch nicht bestätigter Termin</p>
-                          )}
+                      <div className="w-16 h-16 rounded-full bg-muted overflow-hidden flex-shrink-0">
+                        <img
+                          src={appointment.image || "/placeholder.svg"}
+                          alt={appointment.person}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <p className="text-lg font-semibold">{appointment.date}</p>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
+                              appointment.color === "blue"
+                                ? "bg-blue-100 text-blue-700"
+                                : appointment.color === "pink"
+                                  ? "bg-pink-100 text-pink-700"
+                                  : "bg-orange-100 text-orange-700"
+                            }`}
+                          >
+                            {appointment.type === "sitting"
+                              ? "Sitting"
+                              : appointment.type === "being-sat"
+                                ? "Wird gesittet"
+                                : "Anfrage"}
+                          </span>
                         </div>
-                        <p className="text-sm font-medium">{appointment.time}</p>
+                        <p className="text-sm text-muted-foreground mb-1">{appointment.time}</p>
+                        {appointment.type === "sitting" ? (
+                          <p className="text-sm text-foreground">
+                            bei <span className="font-medium">{appointment.person}</span> • {appointment.cats}
+                          </p>
+                        ) : appointment.type === "being-sat" ? (
+                          <p className="text-sm text-foreground">
+                            <span className="font-medium">{appointment.person}</span> sittet deine Katze
+                          </p>
+                        ) : (
+                          <p className="text-sm text-foreground">
+                            Buchungsanfrage bei <span className="font-medium">{appointment.person}</span>
+                          </p>
+                        )}
+                        {appointment.status === "pending" && (
+                          <p className="text-xs text-orange-600 font-medium mt-1">⏳ Noch nicht bestätigt</p>
+                        )}
                       </div>
-                      {appointment.type === "sitting" && <p className="text-sm mb-3">Sitten bei {appointment.cats}</p>}
-                      {appointment.type === "pending-booking" && (
-                        <p className="text-sm mb-3">Buchungsanfrage bei {appointment.person}</p>
-                      )}
-                      <div className="flex justify-end">
-                        <Button variant="ghost" size="sm" className="gap-1 h-8">
-                          Details
-                          <ChevronRight className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </Card>
+
+                      <ChevronRight className="w-6 h-6 text-muted-foreground flex-shrink-0" />
+                    </div>
                   ))}
                 </div>
               ) : (

@@ -15,7 +15,7 @@ export default function SitterPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link href="/sitter/my-absences">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary overflow-hidden p-0 min-h-[180px]">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer hover:border-primary overflow-hidden p-0 min-h-[180px] border shadow-none">
               <div className="flex items-stretch h-full min-h-[180px]">
                 <div className="flex-1 p-6 flex flex-col justify-center">
                   <h3 className="text-xl font-semibold mb-2">Ich suche Katzensitter</h3>
@@ -29,7 +29,7 @@ export default function SitterPage() {
           </Link>
 
           <Link href="/sitter/find-cats">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary overflow-hidden p-0 min-h-[180px]">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer hover:border-primary overflow-hidden p-0 min-h-[180px] border shadow-none">
               <div className="flex items-stretch h-full min-h-[180px]">
                 <div className="flex-1 p-6 flex flex-col justify-center">
                   <h3 className="text-xl font-semibold mb-2">Ich möchte sitten</h3>
@@ -45,12 +45,12 @@ export default function SitterPage() {
           </Link>
 
           <Link href="/sitter/connect">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary overflow-hidden p-0 min-h-[180px]">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer hover:border-primary overflow-hidden p-0 min-h-[180px] border shadow-none">
               <div className="flex items-stretch h-full min-h-[180px]">
                 <div className="flex-1 p-6 flex flex-col justify-center">
                   <h3 className="text-xl font-semibold mb-2">Einfach Verbinden</h3>
                   <p className="text-sm text-muted-foreground">
-                    Suche und finde andere Katzensitter. Wer weiss, vielleicht könnt ihr euch später aushelfen.
+                    Suche und finde andere Katzenhalter:innen. Wer weiss, vielleicht könnt ihr euch später aushelfen.
                   </p>
                 </div>
                 <div className="relative w-40 flex-shrink-0">

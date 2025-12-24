@@ -12,7 +12,7 @@ export default function OnboardingWelcome() {
     <OnboardingLayout currentStep={1} showLogo={false} useCard={false}>
       <div className="text-center space-y-6 max-w-md mx-auto">
         <div className="flex justify-center mb-4">
-          <Image src="/miauzly-logo-blau.png" alt="Miauzly" width={200} height={60} className="h-16 w-auto" />
+          <Image src="/miauzly-logo-color.png" alt="Miauzly" width={200} height={60} className="h-16 w-auto" />
         </div>
 
         <div className="space-y-3">

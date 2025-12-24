@@ -7,20 +7,33 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useRouter } from "next/navigation"
+import { Check } from "lucide-react"
+
+type ServiceType = "tausch" | "bezahlen"
 
 export default function OnboardingSitter() {
   const router = useRouter()
+  const [serviceType, setServiceType] = useState<ServiceType>("tausch")
   const [formData, setFormData] = useState({
     services: {
       feeding: false,
       overnight: false,
       medical: false,
     },
-    pricePerDay: "",
+    priceOneVisit: "",
+    priceTwoVisits: "",
   })
 
   const handleContinue = () => {
-    localStorage.setItem("onboarding_sitter", JSON.stringify(formData))
+    localStorage.setItem("onboarding_sitter", JSON.stringify({ ...formData, serviceType }))
+    localStorage.setItem(
+      "miauzly_service_settings",
+      JSON.stringify({
+        type: serviceType,
+        priceOneVisit: formData.priceOneVisit,
+        priceTwoVisits: formData.priceTwoVisits,
+      }),
+    )
     router.push("/onboarding/done")
   }
 
@@ -34,6 +47,41 @@ export default function OnboardingSitter() {
         </div>
 
         <div className="space-y-6">
+          <div className="space-y-4">
+            <Label className="text-base font-semibold">Wie möchtest du die App nutzen?</Label>
+            <div className="space-y-3">
+              <button
+                onClick={() => setServiceType("tausch")}
+                className={`w-full p-4 border-2 rounded-lg transition-all ${
+                  serviceType === "tausch" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="text-left flex-1">
+                    <p className="font-semibold">Tausch</p>
+                    <p className="text-sm text-muted-foreground">Gegenseitige Katzenbetreuung ohne Bezahlung</p>
+                  </div>
+                  {serviceType === "tausch" && <Check className="w-6 h-6 text-primary flex-shrink-0" />}
+                </div>
+              </button>
+
+              <button
+                onClick={() => setServiceType("bezahlen")}
+                className={`w-full p-4 border-2 rounded-lg transition-all ${
+                  serviceType === "bezahlen" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="text-left flex-1">
+                    <p className="font-semibold">Bezahlen</p>
+                    <p className="text-sm text-muted-foreground">Ich biete bezahlte Katzenbetreuung an</p>
+                  </div>
+                  {serviceType === "bezahlen" && <Check className="w-6 h-6 text-primary flex-shrink-0" />}
+                </div>
+              </button>
+            </div>
+          </div>
+
           <div className="space-y-4">
             <Label className="text-base font-semibold">Biete an:</Label>
 
@@ -88,17 +136,41 @@ export default function OnboardingSitter() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="price">Preis pro Tag (CHF)</Label>
-            <Input
-              id="price"
-              type="number"
-              placeholder="25"
-              value={formData.pricePerDay}
-              onChange={(e) => setFormData({ ...formData, pricePerDay: e.target.value })}
-            />
-            <p className="text-xs text-muted-foreground">Kann später in der App angepasst werden</p>
-          </div>
+          {serviceType === "bezahlen" && (
+            <div className="space-y-4 pt-4 border-t">
+              <Label className="text-base font-semibold">Deine Preise</Label>
+
+              <div className="space-y-2">
+                <Label htmlFor="priceOneVisit">Preis für 1 Besuch pro Tag</Label>
+                <div className="relative">
+                  <Input
+                    id="priceOneVisit"
+                    type="number"
+                    placeholder="0.00"
+                    value={formData.priceOneVisit}
+                    onChange={(e) => setFormData({ ...formData, priceOneVisit: e.target.value })}
+                    className="pr-12"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">CHF</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="priceTwoVisits">Preis für 2 Besuche pro Tag</Label>
+                <div className="relative">
+                  <Input
+                    id="priceTwoVisits"
+                    type="number"
+                    placeholder="0.00"
+                    value={formData.priceTwoVisits}
+                    onChange={(e) => setFormData({ ...formData, priceTwoVisits: e.target.value })}
+                    className="pr-12"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">CHF</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3">

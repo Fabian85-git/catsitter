@@ -4,7 +4,7 @@ import type React from "react"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Clock, Plus, ArrowRight, X } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, Plus, ChevronRight, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
@@ -91,77 +91,68 @@ export default function MyAbsencesPage() {
 
         <Button
           variant="default"
-          className="w-full max-w-sm mb-6 h-12 text-base font-normal justify-between"
+          className="mb-6 h-11 text-base font-normal gap-2"
           onClick={() => setIsModalOpen(true)}
         >
           Abwesenheit erfassen
-          <Plus className="w-5 h-5 ml-2" />
+          <Plus className="w-4 h-4" />
         </Button>
 
         <div className="border-t border-gray-200 mb-6" />
 
         <h2 className="text-2xl font-bold mb-4">Meine Abwesenheiten</h2>
 
-        <div className="space-y-6">
+        <div className="divide-y">
           {allAbsences.length === 0 && <p className="text-muted-foreground">Noch keine Abwesenheiten erfasst.</p>}
-          {allAbsences.map((absence, index) => (
-            <div key={absence.id}>
-              <div className="space-y-3">
-                <div className="flex items-start justify-between">
-                  <h3 className="text-xl font-semibold">{absence.title}</h3>
-                  <span className="bg-[#5682D3] text-white px-3 py-1 rounded-full text-xs font-medium flex-shrink-0">
+          {allAbsences.map((absence) => (
+            <div
+              key={absence.id}
+              className="py-4 flex items-center gap-4 cursor-pointer hover:bg-muted/50 transition-colors -mx-4 px-4"
+              onClick={() => router.push(`/sitter/my-absences/${absence.id}`)}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2 mb-1">
+                  <h3 className="text-lg font-semibold">{absence.title}</h3>
+                  <span className="bg-[#5682D3] text-white px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0">
                     {absence.type}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-1">
                   <div
-                    className={`w-3 h-3 rounded-full ${absence.status === "assigned" ? "bg-green-500" : "bg-red-500"}`}
+                    className={`w-2.5 h-2.5 rounded-full ${absence.status === "assigned" ? "bg-green-500" : "bg-red-500"}`}
                   />
-                  <span className="font-medium">{absence.status === "assigned" ? absence.sitterName : "Offen"}</span>
+                  <span className="text-sm font-medium">
+                    {absence.status === "assigned" ? absence.sitterName : "Offen"}
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-foreground">
-                  <Calendar className="w-5 h-5" />
+                <div className="flex items-center gap-1.5 text-sm text-foreground mb-1">
+                  <Calendar className="w-4 h-4" />
                   <span>{absence.dates}</span>
                 </div>
 
-                {absence.time && (
-                  <div className="flex items-center gap-2 text-foreground">
-                    <Clock className="w-5 h-5" />
-                    <span>{absence.time}</span>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 text-foreground">
-                  <Clock className="w-5 h-5" />
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
                   <span>{absence.frequency}</span>
                 </div>
 
                 {absence.status !== "assigned" && (
                   <Button
                     variant="outline"
-                    className="w-full max-w-md h-12 justify-between bg-transparent"
-                    onClick={() => router.push(`/sitter/my-absences/${absence.id}/available-sitters`)}
+                    size="sm"
+                    className="mt-2 h-9 text-sm bg-transparent"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      router.push(`/sitter/my-absences/${absence.id}/available-sitters`)
+                    }}
                   >
                     Verfügbare Sitter anzeigen
-                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 )}
-
-                <div className="flex justify-end">
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-2 h-auto px-2"
-                    onClick={() => router.push(`/sitter/my-absences/${absence.id}`)}
-                  >
-                    <span className="text-sm">Details</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </div>
               </div>
 
-              {index < allAbsences.length - 1 && <div className="border-t mt-6" />}
+              <ChevronRight className="w-6 h-6 text-muted-foreground flex-shrink-0" />
             </div>
           ))}
         </div>

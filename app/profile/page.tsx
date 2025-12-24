@@ -9,17 +9,31 @@ import { BottomNav } from "@/components/bottom-nav"
 import { useUserProfile } from "@/lib/hooks/use-user-profile"
 import { userProfileStore } from "@/lib/data-store"
 import Image from "next/image"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function ProfilePage() {
   const router = useRouter()
   const { profile, updateProfile, clearProfile } = useUserProfile()
+  const [serviceType, setServiceType] = useState<string>("Tausch")
+  const [role, setRole] = useState<string>("")
 
   useEffect(() => {
     const currentProfile = userProfileStore.get()
     if (!currentProfile || currentProfile.nickname !== "fabifabi") {
       userProfileStore.resetToDefaults()
       window.location.reload()
+    }
+
+    const stored = localStorage.getItem("miauzly_service_settings")
+    if (stored) {
+      const settings = JSON.parse(stored)
+      setServiceType(settings.type === "tausch" ? "Tausch" : "Bezahlen")
+    }
+
+    const roleStored = localStorage.getItem("miauzly_user_role")
+    if (roleStored) {
+      const roleData = JSON.parse(roleStored)
+      setRole(roleData.role)
     }
   }, [])
 
@@ -71,47 +85,35 @@ export default function ProfilePage() {
         </div>
 
         {/* Personal Information */}
-        <Card className="p-4 space-y-4">
-          <h2 className="font-semibold text-lg mb-3">Persönliche Daten</h2>
-
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-muted-foreground">Name</p>
-              <p className="font-medium">
-                {profile.firstName} {profile.lastName}
-              </p>
-            </div>
-
-            <div className="border-t pt-3">
-              <p className="text-sm text-muted-foreground">Adresse</p>
-              <p className="font-medium">{profile.address}</p>
-            </div>
-
-            <div className="border-t pt-3">
-              <p className="text-sm text-muted-foreground">E-Mail</p>
-              <p className="font-medium">{profile.email}</p>
-            </div>
-
-            <div className="border-t pt-3">
-              <p className="text-sm text-muted-foreground">Telefon</p>
-              <p className="font-medium">{profile.phone || "Nicht angegeben"}</p>
-            </div>
+        <Card>
+          <div
+            onClick={() => router.push("/profile/personal-data")}
+            className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          >
+            <h2 className="font-semibold text-lg">Persönliche Daten</h2>
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
         </Card>
 
         {/* Settings Links */}
         <Card className="divide-y">
-          <Link href="/profile/password" className="block">
+          <Link href="/profile/rolle" className="block">
             <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
-              <span className="font-medium">Passwort ändern</span>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              <span className="font-medium">Rolle</span>
+              <div className="flex items-center gap-2">
+                {role && <span className="text-sm text-muted-foreground">{role}</span>}
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </div>
             </div>
           </Link>
 
-          <Link href="/profile/messages" className="block">
+          <Link href="/profile/typ" className="block">
             <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
-              <span className="font-medium">Nachrichten</span>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              <span className="font-medium">Sitter-Typ</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">{serviceType}</span>
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </div>
             </div>
           </Link>
 
@@ -132,6 +134,13 @@ export default function ProfilePage() {
           <Link href="/profile/subscription" className="block">
             <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
               <span className="font-medium">Abo verwalten</span>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </Link>
+
+          <Link href="/profile/password" className="block">
+            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+              <span className="font-medium">Passwort ändern</span>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>
           </Link>

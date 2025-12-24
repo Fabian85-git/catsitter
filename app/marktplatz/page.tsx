@@ -198,7 +198,7 @@ export default function MarktplatzPage() {
                 <Card
                   key={category.id}
                   onClick={() => router.push(`/marktplatz/${category.slug}`)}
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer shadow-none"
                 >
                   <div className="aspect-[3/2] overflow-hidden bg-muted">
                     <img

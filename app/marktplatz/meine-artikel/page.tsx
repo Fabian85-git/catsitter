@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Plus } from "lucide-react"
+import { ArrowLeft, Plus, ChevronDown, ChevronUp } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import {
@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label"
 export default function MeineArtikelPage() {
   const router = useRouter()
   const [showNewItemDialog, setShowNewItemDialog] = useState(false)
+  const [showSoldItems, setShowSoldItems] = useState(false)
   const [newItem, setNewItem] = useState({
     title: "",
     price: "",
@@ -36,6 +37,7 @@ export default function MeineArtikelPage() {
       image: "/cat-bed.jpg",
       category: "Katzenbetten",
       soldDate: "vor 5 Tagen",
+      description: "Rundes Katzenbett in sehr gutem Zustand, nur wenig genutzt.",
     },
     {
       id: 102,
@@ -44,6 +46,7 @@ export default function MeineArtikelPage() {
       image: "/cat-food-bowls.jpg",
       category: "Näpfe",
       soldDate: "vor 2 Wochen",
+      description: "Hochwertiges Futternapf-Set aus Keramik mit Erhöhung.",
     },
   ]
 
@@ -118,27 +121,45 @@ export default function MeineArtikelPage() {
 
         {soldListings.length > 0 && (
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Bereits verkaufte Artikel</h3>
-            <div className="space-y-2">
-              {soldListings.map((listing) => (
-                <Card key={listing.id} className="overflow-hidden opacity-60">
-                  <div className="flex gap-3 p-3">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                      <img
-                        src={listing.image || "/placeholder.svg"}
-                        alt={listing.title}
-                        className="w-full h-full object-cover"
-                      />
+            <button
+              onClick={() => setShowSoldItems(!showSoldItems)}
+              className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors mb-3"
+            >
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Bereits verkaufte Artikel ({soldListings.length})
+                </h3>
+              </div>
+              {showSoldItems ? (
+                <ChevronUp className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              )}
+            </button>
+
+            {showSoldItems && (
+              <div className="space-y-2">
+                {soldListings.map((listing) => (
+                  <Card key={listing.id} className="overflow-hidden opacity-60">
+                    <div className="flex gap-3 p-3">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                        <img
+                          src={listing.image || "/placeholder.svg"}
+                          alt={listing.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-sm line-clamp-1">{listing.title}</h3>
+                        <p className="text-sm font-semibold text-primary">CHF {listing.price}</p>
+                        <p className="text-xs text-muted-foreground mb-1">Verkauft {listing.soldDate}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{listing.description}</p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-sm line-clamp-1">{listing.title}</h3>
-                      <p className="text-sm font-semibold text-primary">CHF {listing.price}</p>
-                      <p className="text-xs text-muted-foreground">Verkauft {listing.soldDate}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

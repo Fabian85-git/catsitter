@@ -36,7 +36,7 @@ export default function CategoryPage() {
                 onClick={() => router.push(`/marktplatz/artikel/${item.id}`)}
                 className="cursor-pointer"
               >
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow shadow-none">
                   <div className="flex gap-4 p-4">
                     <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                       <img
