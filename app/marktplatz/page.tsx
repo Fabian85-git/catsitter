@@ -139,25 +139,21 @@ export default function MarktplatzPage() {
                     onClick={() => router.push(`/marktplatz/artikel/${item.id}`)}
                     className="cursor-pointer"
                   >
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                      <div className="flex gap-4 p-4">
-                        <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
-                          <img
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-base mb-1 line-clamp-2">{item.title}</h3>
-                          <p className="text-xs text-muted-foreground mb-2">{item.category}</p>
-                          <div className="flex items-center justify-between">
-                            <p className="text-lg font-bold text-primary">CHF {item.price}</p>
-                          </div>
-                          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                            <span>{item.seller}</span>
+                    <Card className="hover:shadow-lg transition-shadow shadow-none p-4">
+                      <div className="flex gap-4">
+                        <img
+                          src={item.image || "/placeholder.svg"}
+                          alt={item.title}
+                          className="w-24 h-24 object-cover rounded flex-shrink-0"
+                        />
+                        <div className="flex-1 flex flex-col justify-center min-w-0">
+                          <h3 className="font-semibold text-base mb-1 line-clamp-1">{item.title}</h3>
+                          <p className="text-xs text-muted-foreground mb-1">{item.category}</p>
+                          <p className="text-lg font-bold text-[#5682D3] mb-2">CHF {item.price}</p>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span className="line-clamp-1">{item.seller}</span>
                             <span>•</span>
-                            <span>{item.location}</span>
+                            <span className="line-clamp-1">{item.location}</span>
                           </div>
                         </div>
                       </div>
@@ -198,7 +194,7 @@ export default function MarktplatzPage() {
                 <Card
                   key={category.id}
                   onClick={() => router.push(`/marktplatz/${category.slug}`)}
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer shadow-none"
+                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer shadow-none p-0"
                 >
                   <div className="aspect-[3/2] overflow-hidden bg-muted">
                     <img

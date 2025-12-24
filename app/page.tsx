@@ -60,20 +60,20 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold mb-4 text-balance">Nächster Termin</h2>
 
             <Card
-              className="p-4 border shadow-none cursor-pointer hover:bg-muted/50 transition-colors py-6"
+              className="p-4 border shadow-none cursor-pointer hover:bg-muted/50 transition-colors px-3 py-3"
               onClick={() => router.push("/termine/1")}
             >
               <div className="flex items-center gap-3">
                 {/* Avatar */}
                 <div className="w-12 h-12 rounded-full bg-muted overflow-hidden flex-shrink-0">
-                  <img src="/smiling-brown-haired-woman.png" alt="Anna" className="w-full h-full object-cover" />
+                  <img src="/smiling-brown-haired-woman.png" alt="Anna" className="h-full object-cover border-0 w-full" />
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between gap-2 mb-1 items-center">
                     <p className="font-semibold text-lg">28. September 2025</p>
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 bg-blue-100 text-blue-700">
+                    <span className="px-2 rounded-full text-xs font-medium flex-shrink-0 bg-blue-100 text-blue-700 py-0.5">
                       Sitting
                     </span>
                   </div>

@@ -36,26 +36,22 @@ export default function CategoryPage() {
                 onClick={() => router.push(`/marktplatz/artikel/${item.id}`)}
                 className="cursor-pointer"
               >
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow shadow-none">
-                  <div className="flex gap-4 p-4">
-                    <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
-                      <img
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-base mb-1 line-clamp-2">{item.title}</h3>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-lg font-bold text-primary">CHF {item.price}</p>
-                      </div>
+                <Card className="hover:shadow-lg transition-shadow shadow-none p-4">
+                  <div className="flex gap-4">
+                    <img
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      className="w-24 h-24 object-cover rounded flex-shrink-0"
+                    />
+                    <div className="flex-1 flex flex-col justify-center min-w-0">
+                      <h3 className="font-semibold text-base mb-1 line-clamp-1">{item.title}</h3>
+                      <p className="text-lg font-bold text-[#5682D3] mb-2">CHF {item.price}</p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <User className="w-3 h-3" />
-                        <span>{item.seller}</span>
+                        <User className="w-3 h-3 flex-shrink-0" />
+                        <span className="line-clamp-1">{item.seller}</span>
                         <span>•</span>
-                        <MapPin className="w-3 h-3" />
-                        <span>{item.location}</span>
+                        <MapPin className="w-3 h-3 flex-shrink-0" />
+                        <span className="line-clamp-1">{item.location}</span>
                       </div>
                     </div>
                   </div>
