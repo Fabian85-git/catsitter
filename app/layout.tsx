@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Miautzer - Katzensitter App",
   description: "Finde Katzensitter oder biete Katzenbetreuung an",
   generator: "v0.app",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
