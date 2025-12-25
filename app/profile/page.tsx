@@ -64,7 +64,7 @@ export default function ProfilePage() {
 
       <div className="max-w-screen-xl mx-auto p-4 space-y-6">
         {/* Profile Picture and Name Section */}
-        <div className="flex flex-col items-center gap-4 py-6">
+        <div className="flex flex-col items-center gap-4 py-0">
           <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center overflow-hidden">
             {profile.avatar ? (
               <Image
@@ -72,7 +72,7 @@ export default function ProfilePage() {
                 alt="Profilbild"
                 width={96}
                 height={96}
-                className="w-full h-full object-cover"
+                className="h-full object-cover w-full"
               />
             ) : (
               <User className="w-12 h-12 text-muted-foreground" />
@@ -85,20 +85,20 @@ export default function ProfilePage() {
         </div>
 
         {/* Personal Information */}
-        <Card>
+        <Card className="shadow-none">
           <div
             onClick={() => router.push("/profile/personal-data")}
-            className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+            className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/50 transition-colors py-1.5"
           >
-            <h2 className="font-semibold text-lg">Persönliche Daten</h2>
+            <h2 className="font-medium">Persönliche Daten</h2>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
         </Card>
 
         {/* Settings Links */}
-        <Card className="divide-y">
+        <Card className="divide-y my-0 py-4 shadow-none">
           <Link href="/profile/rolle" className="block">
-            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors py-4">
               <span className="font-medium">Rolle</span>
               <div className="flex items-center gap-2">
                 {role && <span className="text-sm text-muted-foreground">{role}</span>}
@@ -125,7 +125,7 @@ export default function ProfilePage() {
           </Link>
 
           <Link href="/profile/gallery" className="block">
-            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+            <div className="flex justify-between p-4 hover:bg-muted/50 transition-colors items-center">
               <span className="font-medium">Fotogalerie</span>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>

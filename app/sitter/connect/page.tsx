@@ -1,10 +1,11 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, List, Map } from "lucide-react"
+import { ChevronLeft, List, Map, MapPin, Star, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { MapView } from "@/components/map-view"
 
 const catOwners = [
   {
@@ -69,6 +70,33 @@ const catOwners = [
 export default function ConnectPage() {
   const router = useRouter()
   const [viewMode, setViewMode] = useState<"list" | "map">("list")
+  const [selectedOwner, setSelectedOwner] = useState<any>(null)
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+
+  useEffect(() => {
+    if (!selectedOwner) return
+
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLDivElement
+      const scrollPosition = target.scrollLeft
+      const photoWidth = target.offsetWidth
+      const index = Math.round(scrollPosition / photoWidth)
+      setCurrentPhotoIndex(index)
+    }
+
+    const photoGallery = document.getElementById("connect-photo-gallery")
+    if (photoGallery) {
+      photoGallery.addEventListener("scroll", handleScroll)
+      return () => photoGallery.removeEventListener("scroll", handleScroll)
+    }
+  }, [selectedOwner])
+
+  const handleMapMarkerClick = (owner: any) => {
+    setSelectedOwner(owner)
+    setIsSheetOpen(true)
+    setCurrentPhotoIndex(0)
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,11 +106,11 @@ export default function ConnectPage() {
             <ChevronLeft className="w-6 h-6" />
           </Button>
 
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between mb-4 flex-row items-start">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold mb-1">Finde Miautzlovers in deiner Nähe</h1>
+              <h1 className="text-2xl font-bold mb-1">Finde Miauzlovers in deiner Nähe</h1>
               <p className="text-sm text-muted-foreground">
-                Verbinde dich mit andern Katzenfreaks. Es muss nicht gleich für einen festen Termin sein.
+                Verbinde dich mit Katzenhalter:innen. Es muss nicht gleich für einen festen Termin sein.
               </p>
             </div>
             <div className="flex border rounded-lg overflow-hidden ml-4 flex-shrink-0">
@@ -139,42 +167,128 @@ export default function ConnectPage() {
           </div>
         ) : (
           <div className="relative w-full h-[calc(100vh-240px)] -mx-4">
-            <iframe
-              src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2701.234567890123!2d8.5417!3d47.3769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDfCsDIyJzM2LjgiTiA4wrAzMjcwLjEiIkU!5e0!3m2!1sde!2sch!4v1234567890123!5m2!1sde!2sch&zoom=16`}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full"
+            <MapView
+              markers={catOwners.map((owner) => ({
+                sitter: {
+                  id: owner.id,
+                  name: owner.name,
+                  avatar: owner.image,
+                  location: owner.distance,
+                  bio: `${owner.cats} - ${owner.street}`,
+                  fullBio: `Ich bin ${owner.name} und habe ${owner.cats}. Ich wohne an der ${owner.street}.`,
+                  rating: 4.8,
+                  reviewCount: 23,
+                  cats: [{ name: owner.cats, breed: "", age: "", image: owner.image }],
+                  type: owner.type,
+                  price1Visit: owner.type === "bezahlt" ? owner.price : undefined,
+                  photos: [owner.image, owner.image],
+                  paymentType: owner.type,
+                } as any,
+                lat: owner.lat,
+                lng: owner.lng,
+              }))}
+              onMarkerClick={handleMapMarkerClick}
             />
-            {/* Overlay markers for each person */}
-            <div className="absolute inset-0 pointer-events-none">
-              {catOwners.map((owner, index) => (
-                <div
-                  key={owner.id}
-                  onClick={() => router.push(`/sitter/connect/${owner.id}`)}
-                  className="pointer-events-auto cursor-pointer"
-                  style={{
-                    position: "absolute",
-                    left: `${50 + (index - 2) * 8}%`,
-                    top: `${45 + (index % 2) * 10}%`,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <div className="text-4xl hover:scale-110 transition-transform">🐱</div>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-background border rounded-lg px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                    <p className="font-semibold text-sm">{owner.name}</p>
-                    <p className="text-xs text-muted-foreground">{owner.distance}</p>
-                    <p className="text-xs">{owner.cats}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         )}
       </main>
+
+      {selectedOwner && isSheetOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsSheetOpen(false)} />
+
+          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
+            <div className="absolute top-4 right-4 z-10">
+              <button
+                onClick={() => setIsSheetOpen(false)}
+                className="rounded-full bg-background/80 backdrop-blur-sm p-2 hover:bg-background transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1">
+              <div className="relative">
+                <div
+                  id="connect-photo-gallery"
+                  className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+                  style={{ scrollbarWidth: "none" }}
+                >
+                  {selectedOwner.photos.map((photo: string, index: number) => (
+                    <div key={index} className="flex-shrink-0 w-full snap-center">
+                      <img
+                        src={photo || "/placeholder.svg"}
+                        alt={`${selectedOwner.name} photo ${index + 1}`}
+                        className="w-full h-64 object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  {currentPhotoIndex + 1}/{selectedOwner.photos.length}
+                </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h2 className="text-2xl font-bold">{selectedOwner.name}</h2>
+                    <span className="px-3 py-1 rounded-full bg-[#5682D3] text-white text-xs font-medium">
+                      {selectedOwner.paymentType === "tausch" ? "Tausch" : "Bezahlt"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="font-medium">{selectedOwner.rating}</span>
+                    <span className="text-sm">({selectedOwner.reviewCount} Bewertungen)</span>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-2">Über mich</h3>
+                  <p className="text-muted-foreground">{selectedOwner.fullBio || selectedOwner.bio}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-2">Standort</h3>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="w-4 h-4" />
+                    <span>{selectedOwner.location}</span>
+                  </div>
+                </div>
+
+                {selectedOwner.cats && selectedOwner.cats.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-3">Katzen</h3>
+                    <div className="flex gap-4">
+                      {selectedOwner.cats.map((cat: any, index: number) => (
+                        <div key={index} className="flex flex-col items-center gap-2">
+                          <img
+                            src={cat.image || "/placeholder.svg"}
+                            alt={cat.name}
+                            className="w-20 h-20 rounded-full object-cover"
+                          />
+                          <span className="text-sm font-medium">{cat.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => {
+                    setIsSheetOpen(false)
+                    router.push(`/sitter/connect/${selectedOwner.id}`)
+                  }}
+                  className="w-full bg-[#5682D3] hover:bg-[#4571C2] text-white py-3 rounded-lg font-medium transition-colors"
+                >
+                  Kontaktieren
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

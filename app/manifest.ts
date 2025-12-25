@@ -12,10 +12,16 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait",
     icons: [
       {
-        src: "/miauzly-logo-color.png",
-        sizes: "any",
+        src: "/app-icon.jpg",
+        sizes: "512x512",
         type: "image/png",
-        purpose: "any maskable",
+        purpose: "any",
+      },
+      {
+        src: "/app-icon.jpg",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
     categories: ["lifestyle", "social"],

@@ -3,6 +3,7 @@
 import { AppHeader } from "@/components/app-header"
 import { BottomNav } from "@/components/bottom-nav"
 import { Card } from "@/components/ui/card"
+import { MapView } from "@/components/map-view"
 import { ChevronRight, MapPin, Star, X } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -16,13 +17,13 @@ export default function HomePage() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
 
   const mapMarkers = [
-    { sitter: sitterProfiles.sandra, position: { top: "20%", left: "15%" } },
-    { sitter: sitterProfiles["anna-kim"], position: { top: "35%", right: "25%" } },
-    { sitter: sitterProfiles.tommy, position: { bottom: "30%", left: "40%" } },
-    { sitter: sitterProfiles.charly, position: { top: "50%", right: "15%" } },
-    { sitter: sitterProfiles.esmeralda, position: { bottom: "20%", left: "25%" } },
-    { sitter: sitterProfiles.sandra, position: { top: "45%", left: "55%" } },
-    { sitter: sitterProfiles.tommy, position: { bottom: "35%", right: "35%" } },
+    { sitter: sitterProfiles.sandra, lat: 47.371, lng: 8.526 },
+    { sitter: sitterProfiles["anna-kim"], lat: 47.388, lng: 8.548 },
+    { sitter: sitterProfiles.tommy, lat: 47.365, lng: 8.54 },
+    { sitter: sitterProfiles.charly, lat: 47.385, lng: 8.53 },
+    { sitter: sitterProfiles.esmeralda, lat: 47.368, lng: 8.535 },
+    { sitter: sitterProfiles.sandra, lat: 47.378, lng: 8.545 },
+    { sitter: sitterProfiles.tommy, lat: 47.372, lng: 8.555 },
   ]
 
   const handleMarkerClick = (sitter: SitterProfile) => {
@@ -51,40 +52,34 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <AppHeader />
+      <AppHeader className="sticky top-0" />
 
       <main className="space-y-6">
         <div className="px-4 py-6 max-w-screen-xl mx-auto">
           {/* Next Appointment Section */}
           <section>
-            <h2 className="text-2xl font-bold mb-4 text-balance">Nächster Termin</h2>
+            <h2 className="font-bold mb-4 text-balance text-xl">Nächster Termin</h2>
 
             <Card
-              className="p-4 border shadow-none cursor-pointer hover:bg-muted/50 transition-colors px-3 py-3"
+              className="p-4 border shadow-none cursor-pointer hover:bg-muted/50 transition-colors py-4"
               onClick={() => router.push("/termine/1")}
             >
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="w-12 h-12 rounded-full bg-muted overflow-hidden flex-shrink-0">
-                  <img src="/smiling-brown-haired-woman.png" alt="Anna" className="h-full object-cover border-0 w-full" />
-                </div>
+              {/* Title Row - Full Width */}
+              <div className="flex items-center justify-between mb-0">
+                <h3 className="text-xl font-semibold">28. September 2025</h3>
+                <span className="rounded-full bg-[#5682D3] text-white px-2.5 py-1 font-normal text-xs">Sitting</span>
+              </div>
 
-                {/* Content */}
+              {/* Profile Info Row */}
+              <div className="flex gap-3 items-center my-[-10px] mb-0">
+                <div className="w-16 h-16 rounded-full bg-muted overflow-hidden flex-shrink-0">
+                  <img src="/smiling-brown-haired-woman.png" alt="Anna" className="w-full h-full object-cover" />
+                </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between gap-2 mb-1 items-center">
-                    <p className="font-semibold text-lg">28. September 2025</p>
-                    <span className="px-2 rounded-full text-xs font-medium flex-shrink-0 bg-blue-100 text-blue-700 py-0.5">
-                      Sitting
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground">9:00 - 10:00 Uhr</p>
-                  <p className="text-foreground">
-                    bei <span className="font-medium">Anna</span> • Blanca & Bionda 🐱 🐱
-                  </p>
+                  <p className="font-semibold text-lg mb-0.5">Anna</p>
+                  <p className="text-muted-foreground mb-0.5">9:00 - 10:00 Uhr</p>
+                  <p className="text-foreground">Blanca & Bionda 🐱 🐱</p>
                 </div>
-
-                {/* Chevron */}
-                <ChevronRight className="text-muted-foreground flex-shrink-0 w-7 h-7" />
               </div>
             </Card>
 
@@ -100,32 +95,11 @@ export default function HomePage() {
 
         <section>
           <div className="px-4 max-w-screen-xl mx-auto mb-4">
-            <h2 className="text-2xl font-bold text-balance">Katzensitter in deiner Umgebung</h2>
+            <h2 className="font-bold text-balance text-xl">Katzensitter in deiner Umgebung</h2>
           </div>
 
           <div className="relative w-full aspect-[4/3] overflow-hidden">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d43239.82579415253!2d8.517445!3d47.376888!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47900a08cc0e6e41%3A0xf5c698b65f8c52a7!2sZ%C3%BCrich%2C%20Switzerland!5e0!3m2!1sen!2sus!4v1234567890&disableDefaultUI=true&zoomControl=false"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full"
-            />
-
-            {mapMarkers.map((marker, index) => (
-              <div
-                key={index}
-                className="absolute text-3xl cursor-pointer hover:scale-125 transition-transform"
-                style={marker.position}
-                onClick={() => handleMarkerClick(marker.sitter)}
-                title={marker.sitter.name}
-              >
-                😺
-              </div>
-            ))}
+            <MapView markers={mapMarkers} onMarkerClick={handleMarkerClick} />
           </div>
 
           <div className="px-4 max-w-screen-xl mx-auto mt-4">
@@ -142,11 +116,9 @@ export default function HomePage() {
 
       {selectedSitter && isSheetOpen && (
         <>
-          {/* Backdrop */}
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsSheetOpen(false)} />
+          <div className="fixed inset-0 bg-black/50 z-[60]" onClick={() => setIsSheetOpen(false)} />
 
-          {/* Bottom Sheet */}
-          <div className="fixed inset-x-0 bottom-0 z-50 bg-background rounded-t-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
+          <div className="fixed inset-x-0 bottom-0 z-[70] bg-background rounded-t-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
             {/* Close Button */}
             <div className="absolute top-4 right-4 z-10">
               <button
@@ -183,7 +155,7 @@ export default function HomePage() {
               </div>
 
               {/* Profile Content */}
-              <div className="p-6 space-y-6">
+              <div className="p-6 space-y-6 pb-24">
                 {/* Name and Rating */}
                 <div>
                   <div className="flex items-center gap-2 mb-2">
