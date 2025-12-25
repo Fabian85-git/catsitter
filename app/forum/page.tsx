@@ -215,7 +215,7 @@ export default function ForumPage() {
                 {filteredPosts.length > 0 ? (
                   filteredPosts.map((post) => (
                     <div key={post.id} onClick={() => router.push(`/forum/${post.id}`)} className="cursor-pointer">
-                      <Card className="p-4 hover:shadow-md transition-shadow">
+                      <Card className="p-4 hover:shadow-md transition-shadow shadow-none">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <h3 className="font-semibold text-lg mb-1">{post.title}</h3>

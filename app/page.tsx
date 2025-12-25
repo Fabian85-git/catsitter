@@ -16,6 +16,10 @@ export default function HomePage() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const mapMarkers = [
     { sitter: sitterProfiles.sandra, lat: 47.371, lng: 8.526 },
     { sitter: sitterProfiles["anna-kim"], lat: 47.388, lng: 8.548 },
