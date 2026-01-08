@@ -6,48 +6,88 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { BottomNav } from "@/components/bottom-nav"
-import { useUserProfile } from "@/lib/hooks/use-user-profile"
-import { userProfileStore } from "@/lib/data-store"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 
 export default function ProfilePage() {
   const router = useRouter()
-  const { profile, updateProfile, clearProfile } = useUserProfile()
+  const [profile, setProfile] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [serviceType, setServiceType] = useState<string>("Tausch")
   const [role, setRole] = useState<string>("")
+  const [priceOneVisit, setPriceOneVisit] = useState<string>("")
+  const [priceTwoVisits, setPriceTwoVisits] = useState<string>("")
 
   useEffect(() => {
-    const currentProfile = userProfileStore.get()
-    if (!currentProfile || currentProfile.nickname !== "fabifabi") {
-      userProfileStore.resetToDefaults()
-      window.location.reload()
-    }
-
-    const stored = localStorage.getItem("miauzly_service_settings")
-    if (stored) {
-      const settings = JSON.parse(stored)
-      setServiceType(settings.type === "tausch" ? "Tausch" : "Bezahlen")
-    }
-
-    const roleStored = localStorage.getItem("miauzly_user_role")
-    if (roleStored) {
-      const roleData = JSON.parse(roleStored)
-      setRole(roleData.role)
-    }
+    loadProfile()
   }, [])
 
-  const handleLogout = () => {
-    clearProfile()
-    router.push("/onboarding")
+  const loadProfile = async () => {
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null")
+
+      if (!currentUser) {
+        router.push("/auth/login")
+        return
+      }
+
+      const profileData = JSON.parse(localStorage.getItem("userProfile") || "null")
+
+      if (!profileData) {
+        router.push("/onboarding/role")
+        return
+      }
+
+      setProfile(profileData)
+
+      const serviceSettings = JSON.parse(localStorage.getItem("miauzly_service_settings") || "null")
+      if (serviceSettings) {
+        setServiceType(serviceSettings.type === "tausch" ? "Tausch" : "Bezahlen")
+        setPriceOneVisit(serviceSettings.priceOneVisit)
+        setPriceTwoVisits(serviceSettings.priceTwoVisits)
+      } else if (profileData.service_type) {
+        // Fallback to userProfile if service_settings not found
+        const serviceTypes = []
+        if (profileData.service_type?.includes("tausch")) serviceTypes.push("Tausch")
+        if (profileData.service_type?.includes("bezahlen")) serviceTypes.push("Bezahlen")
+        setServiceType(serviceTypes.join(" & ") || "Nicht angegeben")
+        setPriceOneVisit(profileData.price_one_visit || "")
+        setPriceTwoVisits(profileData.price_two_visits || "")
+      }
+
+      const roleDisplay =
+        profileData.role === "both"
+          ? "Beides"
+          : profileData.role === "sitter"
+            ? "Katzensitter"
+            : profileData.role === "owner"
+              ? "Katzenbesitzer"
+              : ""
+      setRole(roleDisplay)
+    } catch (error) {
+      console.error("Error in loadProfile:", error)
+      router.push("/auth/login")
+    } finally {
+      setLoading(false)
+    }
   }
 
-  if (!profile) {
+  const handleLogout = async () => {
+    localStorage.removeItem("currentUser")
+    localStorage.removeItem("userProfile")
+    router.push("/auth/login")
+  }
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-background pb-20 flex items-center justify-center">
         <p className="text-muted-foreground">Profil wird geladen...</p>
       </div>
     )
+  }
+
+  if (!profile) {
+    return null
   }
 
   return (
@@ -80,7 +120,7 @@ export default function ProfilePage() {
           </div>
           <div className="text-center">
             <p className="text-sm text-muted-foreground">Nickname</p>
-            <p className="text-xl font-bold">{profile.nickname}</p>
+            <p className="text-xl font-bold">{profile.nickname || profile.email}</p>
           </div>
         </div>
 
@@ -117,8 +157,34 @@ export default function ProfilePage() {
             </div>
           </Link>
 
+          {profile.role && (profile.role === "sitter" || profile.role === "both") && (
+            <>
+              {serviceType === "Bezahlen" && (priceOneVisit || priceTwoVisits) && (
+                <div className="p-4 border-b">
+                  <span className="font-medium block mb-2">Preise</span>
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    {priceOneVisit && <p>1 Besuch/Tag: CHF {priceOneVisit}</p>}
+                    {priceTwoVisits && <p>2 Besuche/Tag: CHF {priceTwoVisits}</p>}
+                  </div>
+                </div>
+              )}
+
+              <div className="p-4">
+                <span className="font-medium block mb-2">Ich biete an</span>
+                <div className="text-sm text-muted-foreground space-y-1">
+                  {profile.offers_feeding && <p>✓ Füttern</p>}
+                  {profile.offers_overnight && <p>✓ Übernachtung</p>}
+                  {profile.offers_medical && <p>✓ Medizinische Pflege</p>}
+                  {!profile.offers_feeding && !profile.offers_overnight && !profile.offers_medical && (
+                    <p className="text-muted-foreground/60">Keine Angebote ausgewählt</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
           <Link href="/profile/payment" className="block">
-            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+            <div className="flex justify-between p-4 hover:bg-muted/50 transition-colors items-center">
               <span className="font-medium">Zahlungsmittel</span>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>
