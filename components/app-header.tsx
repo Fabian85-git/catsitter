@@ -47,7 +47,9 @@ export function AppHeader() {
             alt="Miouzly Logo"
             width={200}
             height={50}
-            className="w-auto my-0 h-14"
+            className="my-0 h-14 w-auto"
+            style={{ width: "auto" }}
+            priority
           />
         </Link>
 

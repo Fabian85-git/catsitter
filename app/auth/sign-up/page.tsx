@@ -67,7 +67,7 @@ export default function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md p-8">
         <div className="flex flex-col items-center mb-8">
-          <Image src="/miauzly-logo-color.png" alt="Miauzly" width={120} height={40} className="mb-2" />
+          <Image src="/miauzly-logo-color.png" alt="Miauzly" width={120} height={40} className="mb-2" priority />
           <h1 className="text-2xl font-bold mt-4">Account erstellen</h1>
           <p className="text-muted-foreground text-center mt-2">Werde Teil der Miauzly Community</p>
         </div>
